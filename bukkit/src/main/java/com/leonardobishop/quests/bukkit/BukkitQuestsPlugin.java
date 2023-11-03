@@ -18,6 +18,8 @@ import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter;
 import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetterLatest;
 import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter_1_13;
 import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter_Late_1_8;
+import com.leonardobishop.quests.bukkit.hook.magenta.AbstractMagentaProHook;
+import com.leonardobishop.quests.bukkit.hook.magenta.MagentaProHook;
 import com.leonardobishop.quests.bukkit.hook.papi.AbstractPlaceholderAPIHook;
 import com.leonardobishop.quests.bukkit.hook.papi.PlaceholderAPIHook;
 import com.leonardobishop.quests.bukkit.hook.playerblocktracker.AbstractPlayerBlockTrackerHook;
@@ -81,25 +83,7 @@ import com.leonardobishop.quests.bukkit.tasktype.type.SmeltingTaskType;
 import com.leonardobishop.quests.bukkit.tasktype.type.SmithingTaskType;
 import com.leonardobishop.quests.bukkit.tasktype.type.TamingTaskType;
 import com.leonardobishop.quests.bukkit.tasktype.type.WalkingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.ASkyBlockLevelTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.BentoBoxLevelTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.CitizensDeliverTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.CitizensInteractTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.EcoBossesKillingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.EssentialsBalanceTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.EssentialsMoneyEarnTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.FabledSkyblockLevelTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.IridiumSkyblockValueTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.MythicMobsKillingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.NuVotifierVoteTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.PlaceholderAPIEvaluateTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.PlayerPointsEarnTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.ShopGUIPlusBuyTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.ShopGUIPlusSellTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.SuperiorSkyblockLevelType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.SuperiorSkyblockWorthType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.VotingPluginVoteType;
-import com.leonardobishop.quests.bukkit.tasktype.type.dependent.uSkyBlockLevelTaskType;
+import com.leonardobishop.quests.bukkit.tasktype.type.dependent.*;
 import com.leonardobishop.quests.bukkit.util.CompatUtils;
 import com.leonardobishop.quests.bukkit.util.LogHistory;
 import com.leonardobishop.quests.common.config.ConfigProblem;
@@ -167,6 +151,9 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
     private AbstractPlaceholderAPIHook placeholderAPIHook;
     private AbstractCoreProtectHook coreProtectHook;
     private AbstractEssentialsHook essentialsHook;
+
+    private AbstractMagentaProHook magentaProHook;
+
     private AbstractPlayerBlockTrackerHook playerBlockTrackerHook;
     private ItemGetter itemGetter;
     private QuestsTitle titleHandle;
@@ -344,8 +331,8 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
 
         // Set commands
         QuestsCommandSwitcher questsCommandSwitcher = new QuestsCommandSwitcher(this);
-        super.getCommand("quests").setTabCompleter(questsCommandSwitcher);
-        super.getCommand("quests").setExecutor(questsCommandSwitcher);
+        super.getCommand("mise").setTabCompleter(questsCommandSwitcher);
+        super.getCommand("mise").setExecutor(questsCommandSwitcher);
 
         // Register events
         super.getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
@@ -367,6 +354,10 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
 
             if (CompatUtils.isPluginEnabled("Essentials")) {
                 this.essentialsHook = new EssentialsHook();
+            }
+
+            if (CompatUtils.isPluginEnabled("MagentaPro")) {
+                this.magentaProHook = new MagentaProHook();
             }
 
             try {
@@ -418,12 +409,23 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(() -> new ASkyBlockLevelTaskType(this), () -> CompatUtils.isPluginEnabled("ASkyBlock"));
             taskTypeManager.registerTaskType(() -> new CitizensDeliverTaskType(this), () -> CompatUtils.isPluginEnabled("Citizens"));
             taskTypeManager.registerTaskType(() -> new CitizensInteractTaskType(this), () -> CompatUtils.isPluginEnabled("Citizens"));
+            taskTypeManager.registerTaskType(() -> new CrazyCratesOpenTaskType(this), () -> CompatUtils.isPluginEnabled("CrazyCrates"));
             taskTypeManager.registerTaskType(() -> new EcoBossesKillingTaskType(this), () -> CompatUtils.isPluginEnabled("EcoBosses"));
             taskTypeManager.registerTaskType(() -> new EssentialsBalanceTaskType(this), () -> CompatUtils.isPluginEnabled("Essentials"));
             taskTypeManager.registerTaskType(() -> new EssentialsMoneyEarnTaskType(this), () -> CompatUtils.isPluginEnabled("Essentials"));
             taskTypeManager.registerTaskType(() -> new FabledSkyblockLevelTaskType(this), () -> CompatUtils.isPluginEnabled("FabledSkyblock")); // not tested
             taskTypeManager.registerTaskType(() -> new PlaceholderAPIEvaluateTaskType(this), () -> CompatUtils.isPluginEnabled("PlaceholderAPI"));
             taskTypeManager.registerTaskType(() -> new PlayerPointsEarnTaskType(this), () -> CompatUtils.isPluginEnabled("PlayerPoints"));
+            taskTypeManager.registerTaskType(() -> new MagentaProCreateHomeTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProCreateWarpTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProDeleteHomeTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProDeleteWarpTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProMoveHomeTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProMoveWarpTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProCreditShopTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProShopBuyTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProShopSellTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new RewardsClaimTaskType(this), () -> CompatUtils.isPluginEnabled("Rewards"));
             taskTypeManager.registerTaskType(() -> new ShopGUIPlusBuyTaskType(this), () -> CompatUtils.isPluginEnabled("ShopGUIPlus")); // not tested
             taskTypeManager.registerTaskType(() -> new ShopGUIPlusSellTaskType(this), () -> CompatUtils.isPluginEnabled("ShopGUIPlus")); // not tested
             taskTypeManager.registerTaskType(() -> new SuperiorSkyblockLevelType(this), () -> CompatUtils.isPluginEnabled("SuperiorSkyblock2")); // not tested
@@ -463,7 +465,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             reloadQuests();
             if (!this.getConfigProblems().isEmpty()) {
                 questsLogger.warning("You have configuration issues preventing some quests from loading.");
-                questsLogger.warning("You can view these issues with the command: /q a config.");
+                questsLogger.warning("You can view these issues with the command: /mise a config.");
             }
 
             // Load players who were present during startup (i.e some idiot reloaded the server instead of restarted)
@@ -700,6 +702,10 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
 
     public @Nullable AbstractEssentialsHook getEssentialsHook() {
         return essentialsHook;
+    }
+
+    public AbstractMagentaProHook getMagentaProHook() {
+        return magentaProHook;
     }
 
     public @Nullable AbstractPlayerBlockTrackerHook getPlayerBlockTrackerHook() {

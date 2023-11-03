@@ -10,21 +10,13 @@ allprojects {
     apply plugin: 'java'
 
     group = 'com.leonardobishop'
-    version = '3.14.2'
+    version = '3.14.3'
 
     sourceCompatibility = 17
     targetCompatibility = 17
 }
 
 task allJar( type: Jar, dependsOn: subprojects.tasks['build'] ) {
-    if (project.findProperty('gitversion') == null || project.findProperty('gitversion') == 'true') {
-        ext.gitCommitHash = 'git rev-parse --verify --short HEAD'.execute().text.trim()
-        project.version = "${project.version}-${gitCommitHash}"
-        subprojects.each {
-            it.version = "${it.version}-${gitCommitHash}"
-        }
-    }
-
     subprojects.each { subproject ->
         from subproject.configurations.archives.allArtifacts.files.collect {
             zipTree(it)
@@ -35,31 +27,4 @@ task allJar( type: Jar, dependsOn: subprojects.tasks['build'] ) {
 
 artifacts {
     archives allJar
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'com.leonardobishop'
-            artifactId = 'quests'
-            version = project.version
-
-            artifact allJar
-            pom.withXml {
-                asNode().dependencies.dependency.each { dep ->
-                    dep.parent().remove(dep)
-                }
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            credentials {
-                username = project.findProperty('mavenUser') ?: System.getenv('MAVEN_USER')
-                password = project.findProperty('mavenPassword') ?: System.getenv('MAVEN_PASSWORD')
-            }
-            url = "https://repo.leonardobishop.com/releases/"
-        }
-    }
 }

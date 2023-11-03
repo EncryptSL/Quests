@@ -47,14 +47,13 @@ public final class PlaytimeTaskType extends BukkitTaskType {
 
                             boolean ignoreAfk = TaskUtils.getConfigBoolean(task, "ignore-afk");
 
-                            if (ignoreAfk && plugin.getEssentialsHook() == null) {
-                                PlaytimeTaskType.super.debug("ignore-afk is enabled, but Essentials is not detected on the server", quest.getId(), task.getId(), player.getUniqueId());
+                            if (ignoreAfk && plugin.getMagentaProHook() == null || ignoreAfk && plugin.getEssentialsHook() == null) {
+                                PlaytimeTaskType.super.debug("ignore-afk is enabled, but Essentials or MagentaPro is not detected on the server", quest.getId(), task.getId(), player.getUniqueId());
                             }
 
-                            if (ignoreAfk
-                                    && plugin.getEssentialsHook() != null
-                                    && plugin.getEssentialsHook().isAfk(player)) {
-                                PlaytimeTaskType.super.debug("ignore-afk is enabled and Essentials reports player as afk, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                            if (ignoreAfk && plugin.getMagentaProHook() != null && plugin.getMagentaProHook().isAfk(player.getUniqueId())
+                                    || ignoreAfk && plugin.getEssentialsHook() != null && plugin.getEssentialsHook().isAfk(player)) {
+                                PlaytimeTaskType.super.debug("ignore-afk is enabled and MagentaPro reports player as afk, continuing...", quest.getId(), task.getId(), player.getUniqueId());
                                 continue;
                             }
 
