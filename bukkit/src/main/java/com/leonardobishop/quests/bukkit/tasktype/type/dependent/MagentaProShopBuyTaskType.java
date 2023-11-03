@@ -4,7 +4,6 @@ import com.github.encryptsl.magenta.api.events.shop.ShopBuyEvent;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
 import com.leonardobishop.quests.bukkit.util.TaskUtils;
-import com.leonardobishop.quests.bukkit.util.constraint.TaskConstraintSet;
 import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
@@ -31,7 +30,7 @@ public class MagentaProShopBuyTaskType extends BukkitTaskType {
     public void onMagentaProShopBuy(ShopBuyEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         Player player = Bukkit.getPlayer(uuid);
-        Integer quantity = event.getQuantity();
+        int quantity = event.getQuantity();
         String item = event.getItem();
         if (player == null || player.hasMetadata("NPC")) {
             return;

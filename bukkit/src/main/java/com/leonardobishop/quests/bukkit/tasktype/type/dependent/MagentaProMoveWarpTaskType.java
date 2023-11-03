@@ -1,6 +1,5 @@
 package com.leonardobishop.quests.bukkit.tasktype.type.dependent;
 
-import com.github.encryptsl.magenta.api.events.warp.WarpDeleteEvent;
 import com.github.encryptsl.magenta.api.events.warp.WarpMoveLocationEvent;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;

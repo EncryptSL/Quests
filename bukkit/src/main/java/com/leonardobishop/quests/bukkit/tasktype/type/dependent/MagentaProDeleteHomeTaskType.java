@@ -1,6 +1,5 @@
 package com.leonardobishop.quests.bukkit.tasktype.type.dependent;
 
-import com.github.encryptsl.magenta.api.events.home.HomeCreateEvent;
 import com.github.encryptsl.magenta.api.events.home.HomeDeleteEvent;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
