@@ -21,6 +21,7 @@ public class MagentaProShopSellTaskType extends BukkitTaskType {
         super("mg_shop_sell", TaskUtils.TASK_ATTRIBUTION_STRING, "Sell item or something from magenta vault shop", "mg_shop_sell_certain");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useItemStackConfigValidator(this, "item"));
+        super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "price-accepting"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
     }
@@ -30,6 +31,7 @@ public class MagentaProShopSellTaskType extends BukkitTaskType {
         UUID uuid = event.getPlayer().getUniqueId();
         Player player = Bukkit.getPlayer(uuid);
         int quantity = event.getQuantity();
+        int price = event.getPrice();
         String item = event.getItem();
         if (player == null || player.hasMetadata("NPC")) {
             return;
@@ -45,7 +47,7 @@ public class MagentaProShopSellTaskType extends BukkitTaskType {
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
 
-            if (pendingTask.task().hasConfigKey("item")) {
+            if (task.hasConfigKey("item")) {
                 String taskItemId = (String) task.getConfigValue("item");
                 if (taskItemId == null || !taskItemId.equals(item)) {
                     super.debug("Item id does not match required id, continuing...", quest.getId(), task.getId(), player.getUniqueId());
@@ -56,7 +58,7 @@ public class MagentaProShopSellTaskType extends BukkitTaskType {
             int amountNeeded = (int) task.getConfigValue("amount");
 
             int progress = TaskUtils.getIntegerTaskProgress(taskProgress);
-            int newProgress = progress + quantity;
+            int newProgress = TaskUtils.getConfigBoolean(task, "price-accepting") ? progress + price : progress + quantity;
             taskProgress.setProgress(newProgress);
             super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());
 

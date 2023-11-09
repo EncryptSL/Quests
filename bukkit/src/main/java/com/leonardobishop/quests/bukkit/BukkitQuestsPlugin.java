@@ -416,6 +416,8 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(() -> new FabledSkyblockLevelTaskType(this), () -> CompatUtils.isPluginEnabled("FabledSkyblock")); // not tested
             taskTypeManager.registerTaskType(() -> new PlaceholderAPIEvaluateTaskType(this), () -> CompatUtils.isPluginEnabled("PlaceholderAPI"));
             taskTypeManager.registerTaskType(() -> new PlayerPointsEarnTaskType(this), () -> CompatUtils.isPluginEnabled("PlayerPoints"));
+            taskTypeManager.registerTaskType(() -> new LotteryBuyTicketsTaskType(this), () -> CompatUtils.isPluginEnabled("Lottery"));
+            taskTypeManager.registerTaskType(() -> new LotteryWinTaskType(this), () -> CompatUtils.isPluginEnabled("Lottery"));
             taskTypeManager.registerTaskType(() -> new MagentaProCreateHomeTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
             taskTypeManager.registerTaskType(() -> new MagentaProCreateWarpTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
             taskTypeManager.registerTaskType(() -> new MagentaProDeleteHomeTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
@@ -425,6 +427,9 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(() -> new MagentaProCreditShopTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
             taskTypeManager.registerTaskType(() -> new MagentaProShopBuyTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
             taskTypeManager.registerTaskType(() -> new MagentaProShopSellTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProStartVotePartyTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProVotePartyTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
+            taskTypeManager.registerTaskType(() -> new MagentaProWinVotePartyTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
             taskTypeManager.registerTaskType(() -> new RewardsClaimTaskType(this), () -> CompatUtils.isPluginEnabled("Rewards"));
             taskTypeManager.registerTaskType(() -> new ShopGUIPlusBuyTaskType(this), () -> CompatUtils.isPluginEnabled("ShopGUIPlus")); // not tested
             taskTypeManager.registerTaskType(() -> new ShopGUIPlusSellTaskType(this), () -> CompatUtils.isPluginEnabled("ShopGUIPlus")); // not tested

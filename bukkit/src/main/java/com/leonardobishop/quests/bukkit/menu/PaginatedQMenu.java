@@ -117,6 +117,7 @@ public abstract class PaginatedQMenu extends QMenu {
             PagePrevMenuElement pagePrevMenuElement = new PagePrevMenuElement(config, this);
             PageDescMenuElement pageDescMenuElement = new PageDescMenuElement(config, this);
             // add manually spacer then let people change item
+            staticMenuElements[45] = spacer;
             staticMenuElements[46] = spacer;
             staticMenuElements[47] = spacer;
             staticMenuElements[51] = spacer;

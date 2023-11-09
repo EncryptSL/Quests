@@ -1,6 +1,6 @@
 package com.leonardobishop.quests.bukkit.tasktype.type.dependent;
 
-import com.github.encryptsl.magenta.api.events.shop.CreditShopBuyEvent;
+import com.github.encryptsl.magenta.api.events.vote.VotePartyPlayerStartedEvent;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
 import com.leonardobishop.quests.bukkit.util.TaskUtils;
@@ -13,52 +13,43 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import java.util.UUID;
-
-public class MagentaProCreditShopTaskType extends BukkitTaskType {
+public class MagentaProStartVotePartyTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
-    public MagentaProCreditShopTaskType(BukkitQuestsPlugin plugin) {
-        super("creditshop_buy", TaskUtils.TASK_ATTRIBUTION_STRING, "Buy something from creditshop", "creditshop_buy_certain");
+
+    public MagentaProStartVotePartyTaskType(BukkitQuestsPlugin plugin) {
+        super("magenta_start_vp", TaskUtils.TASK_ATTRIBUTION_STRING, "Start VoteParty like a last player", "mg_start_vp_certain");
         this.plugin = plugin;
-        super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "price-expect"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onCreditShopBuy(CreditShopBuyEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        int price = event.getPrice();
-        int quantity = event.getQuantity();
-        Player player = Bukkit.getPlayer(uuid);
-        if (player == null || player.hasMetadata("NPC")) {
-            return;
-        }
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onVotePartyStart(VotePartyPlayerStartedEvent event) {
+        String voter = event.getUsername();
+        Player player = Bukkit.getPlayer(voter);
 
-        QPlayer qPlayer = plugin.getPlayerManager().getPlayer(uuid);
-        if (qPlayer == null) {
-            return;
-        }
+        if (player == null || player.hasMetadata("NPC")) return;
+
+        QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
+        if (qPlayer == null) return;
 
         for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this)) {
             Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
+            super.debug("Voteparty started a player", quest.getId(), task.getId(), player.getUniqueId());
 
-            super.debug("Player buy item from creditshop", quest.getId(), task.getId(), player.getUniqueId());
+            int needed = (int) task.getConfigValue("amount");
 
-            int buyNeeded = (int) task.getConfigValue("amount");
-            int progress = TaskUtils.getIntegerTaskProgress(taskProgress);
-            int newProgress = TaskUtils.getConfigBoolean(task, "price-expect") ? progress + price : progress + quantity;
-            taskProgress.setProgress(newProgress);
+            int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress);
             super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());
-
-            if (progress >= buyNeeded) {
+            if (progress >= needed) {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
-                taskProgress.setProgress(buyNeeded);
                 taskProgress.setCompleted(true);
             }
             TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
         }
     }
+
+
 }

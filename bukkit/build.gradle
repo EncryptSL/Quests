@@ -112,7 +112,7 @@ dependencies {
     // VotingPlugin
     compileOnly('com.bencodez:votingplugin:6.9.5') { transitive = false }
 
-    // IridiumSkyblock
+    // Another Dependencies
     compileOnly fileTree(dir: 'libs', includes: ['*.jar'])
 
     // bStats
