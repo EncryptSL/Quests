@@ -19,7 +19,7 @@ public class AdminUpdateCommandHandler implements CommandHandler {
 
     @Override
     public void handle(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.GRAY + "Checking for updates...");
+        sender.sendMessage(ChatColor.GRAY + "Kontrola aktualizací...");
         plugin.getScheduler().doAsync(() -> {
             plugin.getUpdater().check();
             if (plugin.getUpdater().isUpdateReady()) {
@@ -28,7 +28,7 @@ public class AdminUpdateCommandHandler implements CommandHandler {
                         "{oldver}", plugin.getUpdater().getInstalledVersion(),
                         "{link}", plugin.getUpdater().getUpdateLink());
             } else {
-                sender.sendMessage(ChatColor.GRAY + "No updates were found.");
+                sender.sendMessage(ChatColor.GRAY + "žádné aktualizace.");
             }
         });
     }

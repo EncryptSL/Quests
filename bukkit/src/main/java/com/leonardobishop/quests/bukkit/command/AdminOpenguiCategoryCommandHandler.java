@@ -53,7 +53,7 @@ public class AdminOpenguiCategoryCommandHandler implements CommandHandler {
             return;
         }
 
-        sender.sendMessage(ChatColor.RED + "/quests a/admin opengui c/category <player> <category>");
+        sender.sendMessage(ChatColor.RED + "/mise a/admin opengui c/category <player> <category>");
     }
 
     @Override

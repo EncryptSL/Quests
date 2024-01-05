@@ -91,7 +91,7 @@ public final class InventoryTaskType extends BukkitTaskType {
 
     private void checkInventory(Player player, long delay) {
         if (player.hasMetadata("NPC") || !player.isOnline()) return;
-        plugin.getScheduler().runTaskLaterAtEntity(player, () -> checkInventory(player), delay);
+        plugin.getScheduler().runTaskLaterAtLocation(player.getLocation(), () -> checkInventory(player), delay);
     }
 
     private void checkInventory(Player player) {
@@ -163,7 +163,7 @@ public final class InventoryTaskType extends BukkitTaskType {
                     }
                 }
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amount);
         }
     }
 

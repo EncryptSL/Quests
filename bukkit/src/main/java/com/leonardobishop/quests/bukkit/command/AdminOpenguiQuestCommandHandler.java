@@ -37,7 +37,7 @@ public class AdminOpenguiQuestCommandHandler implements CommandHandler {
             Messages.COMMAND_QUEST_ADMIN_PLAYERNOTFOUND.send(sender, "{player}", args[3]);
         }
 
-        sender.sendMessage(ChatColor.RED + "/quests a/admin opengui q/quest <player>");
+        sender.sendMessage(ChatColor.RED + "/mise a/admin opengui q/quest <player>");
     }
 
     @Override

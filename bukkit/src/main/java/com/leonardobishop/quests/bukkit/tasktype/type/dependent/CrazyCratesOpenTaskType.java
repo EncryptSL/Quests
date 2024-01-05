@@ -1,7 +1,7 @@
 package com.leonardobishop.quests.bukkit.tasktype.type.dependent;
 
-import com.badbones69.crazycrates.paper.api.events.PlayerPrizeEvent;
-import com.badbones69.crazycrates.paper.api.objects.Crate;
+import com.badbones69.crazycrates.api.events.PlayerPrizeEvent;
+import com.badbones69.crazycrates.api.objects.Crate;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
 import com.leonardobishop.quests.bukkit.util.TaskUtils;
@@ -51,7 +51,7 @@ public class CrazyCratesOpenTaskType extends BukkitTaskType {
 
             int cratesNeeded = (int) task.getConfigValue("amount");
 
-            if (!TaskUtils.matchString(this, pendingTask, "crate", "crates", crate.getName().replace("&", "").replace(" ", "_"), false, false, player.getUniqueId())) {
+            if (!TaskUtils.matchString(this, pendingTask, crate.getName().replace("&", "").replace(" ", "_"), player.getUniqueId(), "crate","crates", false, true)) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }
@@ -63,7 +63,7 @@ public class CrazyCratesOpenTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, cratesNeeded);
         }
     }
 

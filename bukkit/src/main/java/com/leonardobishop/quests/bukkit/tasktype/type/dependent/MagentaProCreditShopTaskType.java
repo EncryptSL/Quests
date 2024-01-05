@@ -58,7 +58,7 @@ public class MagentaProCreditShopTaskType extends BukkitTaskType {
                 taskProgress.setProgress(buyNeeded);
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, buyNeeded);
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.leonardobishop.quests.bukkit.tasktype.type.dependent;
 
 import com.github.encryptsl.magenta.api.events.home.HomeMoveLocationEvent;
-import com.github.encryptsl.magenta.api.events.warp.WarpDeleteEvent;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
 import com.leonardobishop.quests.bukkit.util.TaskUtils;
@@ -52,7 +51,7 @@ public class MagentaProMoveHomeTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, needed);
         }
     }
 }

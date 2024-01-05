@@ -4,6 +4,7 @@ import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.CommandUtils;
 import com.leonardobishop.quests.bukkit.util.MenuUtils;
 import com.leonardobishop.quests.bukkit.util.Messages;
+import com.leonardobishop.quests.bukkit.util.StringUtils;
 import com.leonardobishop.quests.common.player.QPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -46,11 +47,11 @@ public class QuestsCommandSwitcher extends CommandSwitcher implements TabExecuto
         if (!plugin.isValidConfiguration()
                 && !(args.length >= 2 && (args[0].equalsIgnoreCase("a") || args[0].equalsIgnoreCase("admin"))
                 && args[1].equalsIgnoreCase("reload"))) {
-            sender.sendMessage(ChatColor.RED + "Quests cannot be used right now. Please speak to an administrator.");
+            sender.sendMessage(ChatColor.RED + "Mise nyní nelze použít. Obraťte se prosím na správce.");
             if (sender.hasPermission("quests.admin")) {
                 CommandUtils.showProblems(sender, plugin.getConfigProblems());
-                sender.sendMessage(ChatColor.RED + "The main config (config.yml) must be in tact before quests can be used. " +
-                        "Please use the above information to help rectify the problem.");
+                sender.sendMessage(ChatColor.RED + "Před použitím misí musí být hlavní konfigurace (config.yml) v pořádku. " +
+                        "Použijte prosím výše uvedené informace, které vám pomohou problém odstranit.");
             }
             return true;
         }
@@ -81,31 +82,31 @@ public class QuestsCommandSwitcher extends CommandSwitcher implements TabExecuto
     public void showHelp(CommandSender sender) {
         sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "------------=[" + ChatColor.RED + " Quests v" + plugin
                 .getDescription().getVersion() + " " + ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "]=------------");
-        sender.sendMessage(ChatColor.GRAY + "The following commands are available: ");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests " + ChatColor.DARK_GRAY + ": show quests");
+        sender.sendMessage(StringUtils.colorized("&7K dispozici jsou následující příkazy: "));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/quests &7: zobrazí mise"));
         if (sender.hasPermission(subcommands.get("category").getPermission())) {
-            sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests c/category <categoryid> " + ChatColor.DARK_GRAY + ": open category by ID");
+            sender.sendMessage(StringUtils.colorized("&8&l| &e/mise c/category <categoryid> &7: otevře kategorii podle ID"));
         }
         if (sender.hasPermission(subcommands.get("started").getPermission())) {
-            sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests started " + ChatColor.DARK_GRAY + ": show started quests");
+            sender.sendMessage(StringUtils.colorized("&8&l| &e/mise started &7: zobrazí mise v průběhu"));
         }
         if (sender.hasPermission(subcommands.get("quest").getPermission())) {
-            sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests q/quest <questid> (start|cancel|track) " + ChatColor.DARK_GRAY + ": start, cancel or track quest by ID");
+            sender.sendMessage(StringUtils.colorized("&8&l| &e/mise q/quest <questid> (start|cancel|track) &7: začne, zruší nebo bude sledovat misi podle ID"));
         }
         if (sender.hasPermission(subcommands.get("start").getPermission())) {
-            sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests start <questid>" + ChatColor.DARK_GRAY + ": start quest by name");
+            sender.sendMessage(StringUtils.colorized("&8&l| &e/mise start <questid> &7: začít misi podle jména"));
         }
         if (sender.hasPermission(subcommands.get("track").getPermission())) {
-            sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests track <questid>" + ChatColor.DARK_GRAY + ": track quest by name");
+            sender.sendMessage(StringUtils.colorized("&8&l| &e/mise track <questid> &7: sledovat misi podle jména"));
         }
         if (sender.hasPermission(subcommands.get("cancel").getPermission())) {
-            sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests cancel [questid]" + ChatColor.DARK_GRAY + ": cancel active quest by name");
+            sender.sendMessage(StringUtils.colorized("&8&l| &e/mise cancel [questid] &7: zrušit aktivovanou misi"));
         }
         if (sender.hasPermission(subcommands.get("random").getPermission())) {
-            sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests random " + ChatColor.DARK_GRAY + ": show random quests");
+            sender.sendMessage(StringUtils.colorized("&8&l| &e/mise random &7: zobrazit náhodnou misi"));
         }
         if (sender.hasPermission(subcommands.get("admin").getPermission())) {
-            sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a/admin " + ChatColor.DARK_GRAY + ": view help for admins");
+            sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a/admin &7: zobrazit admin příkazy"));
         }
         sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "--------=[" + ChatColor.RED + " made with <3 by LMBishop " + ChatColor
                 .GRAY.toString() + ChatColor.STRIKETHROUGH + "]=--------");

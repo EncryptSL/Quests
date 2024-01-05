@@ -64,7 +64,7 @@ public class AdminModdataStartCommandHandler implements CommandHandler {
             return;
         }
 
-        sender.sendMessage(ChatColor.RED + "/quests a/admin moddata start <player> <quest>");
+        sender.sendMessage(ChatColor.RED + "/mise a/admin moddata start <player> <quest>");
     }
 
     @Override

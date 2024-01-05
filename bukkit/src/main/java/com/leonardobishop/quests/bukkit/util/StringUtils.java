@@ -1,10 +1,16 @@
 package com.leonardobishop.quests.bukkit.util;
 
+import org.bukkit.ChatColor;
+
 /*
  * From Apache Commons Lang
  * https://github.com/apache/commons-lang/blob/master/LICENSE.txt
  */
 public class StringUtils {
+
+    public static String colorized(String value) {
+        return ChatColor.translateAlternateColorCodes('&', value);
+    }
 
     public static boolean isEmpty(final CharSequence cs) {
         return cs == null || cs.length() == 0;

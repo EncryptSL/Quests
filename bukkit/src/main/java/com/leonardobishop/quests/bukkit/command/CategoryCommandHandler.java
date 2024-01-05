@@ -47,7 +47,7 @@ public class CategoryCommandHandler implements CommandHandler {
             }
             return;
         }
-        sender.sendMessage(ChatColor.RED + "/quests c/category <categoryid>");
+        sender.sendMessage(ChatColor.RED + "/mise c/category <categoryid>");
     }
 
     @Override

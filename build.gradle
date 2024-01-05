@@ -25,6 +25,10 @@ task allJar( type: Jar, dependsOn: subprojects.tasks['build'] ) {
     archiveBaseName = 'Quests'
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 artifacts {
     archives allJar
 }

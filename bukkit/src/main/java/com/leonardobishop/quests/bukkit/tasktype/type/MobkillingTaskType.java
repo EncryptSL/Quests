@@ -91,7 +91,7 @@ public final class MobkillingTaskType extends BukkitTaskType {
                 continue;
             }
 
-            if (!TaskUtils.matchString(this, pendingTask, "name", "names", customName, true, false, player.getUniqueId())) {
+            if (!TaskUtils.matchString(this, pendingTask, customName, player.getUniqueId(), "name", "names", true, false)) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }
@@ -130,7 +130,7 @@ public final class MobkillingTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amount);
         }
     }
 }

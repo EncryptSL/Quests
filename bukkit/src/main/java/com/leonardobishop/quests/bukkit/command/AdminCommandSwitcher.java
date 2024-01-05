@@ -1,6 +1,7 @@
 package com.leonardobishop.quests.bukkit.command;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
+import com.leonardobishop.quests.bukkit.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
@@ -26,21 +27,21 @@ public class AdminCommandSwitcher extends CommandSwitcher {
 
     @Override
     public void showHelp(CommandSender sender) {
-        sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "------------=[" + ChatColor.RED + " Quests Admin " + ChatColor.GRAY
+        sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "------------=[" + ChatColor.RED + " Mise Admin " + ChatColor.GRAY
                 .toString() + ChatColor.STRIKETHROUGH + "]=------------");
-        sender.sendMessage(ChatColor.GRAY + "The following commands are available: ");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a opengui " + ChatColor.DARK_GRAY + ": view help for opengui");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a moddata " + ChatColor.DARK_GRAY + ": view help for quest progression");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a types [type]" + ChatColor.DARK_GRAY + ": view registered task types");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a info [quest]" + ChatColor.DARK_GRAY + ": see information about loaded quests");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a items [import <id>] " + ChatColor.DARK_GRAY + ": view registered quest items");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a reload " + ChatColor.DARK_GRAY + ": reload Quests configuration");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a config " + ChatColor.DARK_GRAY + ": see detected problems in config");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a migratedata " + ChatColor.DARK_GRAY + ": migrate quests data");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a update " + ChatColor.DARK_GRAY + ": check for updates");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a wiki " + ChatColor.DARK_GRAY + ": get a link to the Quests wiki");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a about " + ChatColor.DARK_GRAY + ": get information about Quests");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a debug " + ChatColor.DARK_GRAY + ": view help for debugging");
+        sender.sendMessage(StringUtils.colorized( "&7K dispozici jsou následující příkazy: "));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a opengui &7: zobrazit nápovědu pro menu"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a moddata &7: zobrazit nápovědu pro postup v misích"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a types [type] &7: zobrazit registrované typy misí"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a info [quest] &7: zobrazit informace o načtených misích"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a items [import <id>] &7: zobrazit registrované itemy v misích"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a reload &7: znovu načíst konfiguraci"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a config &7: zobrazit problémy v konfiguraci"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a migratedata &7: migrace dat"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a update &7: zkontrolovat aktualizace"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a wiki &7: odkaz na wiki"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a about &7: informace o misích"));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/mise a debug &7: zobrazit nápovědu pro debug"));
     }
 
     @Override

@@ -18,7 +18,7 @@ public class AdminWikiCommandHandler implements CommandHandler {
 
     @Override
     public void handle(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.RED + "Link to Quests documentation: " + ChatColor.GRAY + "https://quests.leonardobishop.com/");
+        sender.sendMessage(ChatColor.RED + "Odkaz k wiki: " + ChatColor.GRAY + "https://quests.leonardobishop.com/");
     }
 
     @Override

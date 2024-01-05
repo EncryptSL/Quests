@@ -29,13 +29,13 @@ public class AdminItemsCommandHandler implements CommandHandler {
     @Override
     public void handle(CommandSender sender, String[] args) {
         if (args.length < 4) {
-            sender.sendMessage(ChatColor.GRAY + "Imported items");
+            sender.sendMessage(ChatColor.GRAY + "Importované itemy");
             for (QuestItem questItem : plugin.getQuestItemRegistry().getAllItems()) {
                 sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + questItem.getId() + " (" + questItem.getType() + ")");
             }
-            sender.sendMessage(ChatColor.GRAY.toString() + plugin.getQuestItemRegistry().getAllItems().size() + " items imported.");
-            sender.sendMessage(ChatColor.DARK_GRAY + "Import a new held item using /q a items import <id>.");
-            sender.sendMessage(ChatColor.DARK_GRAY + "Give a quest item to a player using /q a items give <player> <id> <amount>.");
+            sender.sendMessage(ChatColor.GRAY.toString() + plugin.getQuestItemRegistry().getAllItems().size() + " importované itemy.");
+            sender.sendMessage(ChatColor.DARK_GRAY + "Import a new held item using /mise a items import <id>.");
+            sender.sendMessage(ChatColor.DARK_GRAY + "Dejte hráči předmět úkolu pomocí /q a items give <player> <id> <amount>.");
         } else if (args[2].equalsIgnoreCase("import") && sender instanceof Player) {
             Player player = (Player) sender;
             ItemStack held = plugin.getVersionSpecificHandler().getItemInMainHand(player).clone();

@@ -39,7 +39,7 @@ public class AdminMigrateCommandHandler implements CommandHandler {
 
         if (args.length == 3 && args[2].equalsIgnoreCase("execute")) {
             if (!dataMigrateFile.exists()) {
-                sender.sendMessage(ChatColor.RED + "Please run '/quests admin migratedata' first.");
+                sender.sendMessage(ChatColor.RED + "Please run '/mise admin migratedata' first.");
                 return;
             }
 

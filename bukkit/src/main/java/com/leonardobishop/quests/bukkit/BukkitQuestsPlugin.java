@@ -15,26 +15,21 @@ import com.leonardobishop.quests.bukkit.hook.coreprotect.CoreProtectHook;
 import com.leonardobishop.quests.bukkit.hook.essentials.AbstractEssentialsHook;
 import com.leonardobishop.quests.bukkit.hook.essentials.EssentialsHook;
 import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter;
-import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetterLatest;
-import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter_1_13;
-import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter_Late_1_8;
+import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter13;
+import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter14;
+import com.leonardobishop.quests.bukkit.hook.itemgetter.ItemGetter8;
 import com.leonardobishop.quests.bukkit.hook.magenta.AbstractMagentaProHook;
 import com.leonardobishop.quests.bukkit.hook.magenta.MagentaProHook;
 import com.leonardobishop.quests.bukkit.hook.papi.AbstractPlaceholderAPIHook;
 import com.leonardobishop.quests.bukkit.hook.papi.PlaceholderAPIHook;
 import com.leonardobishop.quests.bukkit.hook.playerblocktracker.AbstractPlayerBlockTrackerHook;
 import com.leonardobishop.quests.bukkit.hook.playerblocktracker.PlayerBlockTrackerHook;
+import com.leonardobishop.quests.bukkit.hook.skullgetter.*;
 import com.leonardobishop.quests.bukkit.hook.title.QuestsTitle;
 import com.leonardobishop.quests.bukkit.hook.title.Title_Bukkit;
 import com.leonardobishop.quests.bukkit.hook.title.Title_BukkitNoTimings;
 import com.leonardobishop.quests.bukkit.hook.title.Title_Nothing;
-import com.leonardobishop.quests.bukkit.hook.versionspecific.VersionSpecificHandler;
-import com.leonardobishop.quests.bukkit.hook.versionspecific.VersionSpecificHandler11;
-import com.leonardobishop.quests.bukkit.hook.versionspecific.VersionSpecificHandler16;
-import com.leonardobishop.quests.bukkit.hook.versionspecific.VersionSpecificHandler17;
-import com.leonardobishop.quests.bukkit.hook.versionspecific.VersionSpecificHandler20;
-import com.leonardobishop.quests.bukkit.hook.versionspecific.VersionSpecificHandler8;
-import com.leonardobishop.quests.bukkit.hook.versionspecific.VersionSpecificHandler9;
+import com.leonardobishop.quests.bukkit.hook.versionspecific.*;
 import com.leonardobishop.quests.bukkit.item.ParsedQuestItem;
 import com.leonardobishop.quests.bukkit.item.QuestItem;
 import com.leonardobishop.quests.bukkit.item.QuestItemRegistry;
@@ -52,37 +47,7 @@ import com.leonardobishop.quests.bukkit.scheduler.folia.FoliaServerScheduler;
 import com.leonardobishop.quests.bukkit.storage.MySqlStorageProvider;
 import com.leonardobishop.quests.bukkit.storage.YamlStorageProvider;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskTypeManager;
-import com.leonardobishop.quests.bukkit.tasktype.type.BlockItemdroppingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.BlockshearingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.BreedingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.BrewingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.BucketEmptyTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.BucketFillTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.BuildingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.CommandTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.ConsumeTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.CraftingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.DealDamageTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.DistancefromTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.EnchantingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.ExpEarnTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.FarmingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.FishingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.InteractTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.InventoryTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.MilkingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.MiningTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.MobkillingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.PermissionTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.PlayerkillingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.PlaytimeTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.PositionTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.ReplenishingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.ShearingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.SmeltingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.SmithingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.TamingTaskType;
-import com.leonardobishop.quests.bukkit.tasktype.type.WalkingTaskType;
+import com.leonardobishop.quests.bukkit.tasktype.type.*;
 import com.leonardobishop.quests.bukkit.tasktype.type.dependent.*;
 import com.leonardobishop.quests.bukkit.util.CompatUtils;
 import com.leonardobishop.quests.bukkit.util.LogHistory;
@@ -100,6 +65,7 @@ import com.leonardobishop.quests.common.storage.StorageProvider;
 import com.leonardobishop.quests.common.tasktype.TaskType;
 import com.leonardobishop.quests.common.tasktype.TaskTypeManager;
 import com.leonardobishop.quests.common.updater.Updater;
+import com.mojang.authlib.GameProfile;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bstats.bukkit.MetricsLite;
@@ -117,11 +83,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -156,6 +118,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
 
     private AbstractPlayerBlockTrackerHook playerBlockTrackerHook;
     private ItemGetter itemGetter;
+    private SkullGetter skullGetter;
     private QuestsTitle titleHandle;
     private QuestsBossBar bossBarHandle;
     private QuestsActionBar actionBarHandle;
@@ -279,14 +242,10 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
         // (actionbar)
         setActionBarHandle();
 
-        // (itemstacks)
-        if (version <= 12) {
-            itemGetter = new ItemGetter_Late_1_8();
-        } else if (version == 13) {
-            itemGetter = new ItemGetter_1_13();
-        } else {
-            itemGetter = new ItemGetterLatest();
-        }
+        setItemGetter();
+
+        // (skulls)
+        setSkullGetter();
 
         // (version specific handler)
         // TODO move above to version specific handlers
@@ -392,6 +351,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(new PlayerkillingTaskType(this));
             taskTypeManager.registerTaskType(new PlaytimeTaskType(this));
             taskTypeManager.registerTaskType(new PositionTaskType(this));
+            taskTypeManager.registerTaskType(new ProjectilelaunchingTaskType(this));
             taskTypeManager.registerTaskType(new ShearingTaskType(this));
             taskTypeManager.registerTaskType(new SmeltingTaskType(this));
             taskTypeManager.registerTaskType(new TamingTaskType(this));
@@ -685,6 +645,46 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
         actionBarHandle = new ActionBar_Nothing();
     }
 
+    private void setItemGetter() {
+        // Spigot 1.14+
+        if (CompatUtils.classWithMethodExists("org.bukkit.inventory.meta.ItemMeta", "setCustomModelData", Integer.class)) {
+            itemGetter = new ItemGetter14(this);
+            return;
+        }
+
+        // Spigot 1.13+
+        if (CompatUtils.classWithMethodExists("org.bukkit.inventory.meta.ItemMeta", "getAttributeModifiers")) {
+            itemGetter = new ItemGetter13(this);
+            return;
+        }
+
+        // Spigot 1.8+
+        itemGetter = new ItemGetter8(this);
+    }
+
+    private void setSkullGetter() {
+        // Paper 1.12+
+        if (CompatUtils.classExists("com.destroystokyo.paper.profile.PlayerProfile")) {
+            skullGetter = new PaperSkullGetter(this);
+            return;
+        }
+
+        if (CompatUtils.classWithMethodExists("org.bukkit.craftbukkit.{}.inventory.CraftMetaSkull", "setProfile", GameProfile.class)) {
+            // Spigot 1.18.1+
+            if (CompatUtils.classExists("org.bukkit.profile.PlayerProfile")) {
+                skullGetter = new ModernSkullGetter(this);
+                return;
+            }
+
+            // Spigot 1.15.1+
+            skullGetter = new BukkitSkullGetter(this);
+            return;
+        }
+
+        // Spigot 1.8+
+        skullGetter = new LegacySkullGetter(this);
+    }
+
     public boolean isValidConfiguration() {
         return validConfiguration;
     }
@@ -719,6 +719,10 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
 
     public ItemGetter getItemGetter() {
         return itemGetter;
+    }
+
+    public SkullGetter getSkullGetter() {
+        return skullGetter;
     }
 
     public QuestsTitle getTitleHandle() {

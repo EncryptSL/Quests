@@ -55,8 +55,8 @@ public final class CitizensDeliverTaskType extends BukkitTaskType {
 
     @SuppressWarnings("SameParameterValue")
     private void checkInventory(Player player, NPC npc, long delay) {
-        if (player.hasMetadata("NPC")) return;
-        plugin.getScheduler().runTaskLaterAtEntity(player, () -> checkInventory(player, npc), delay);
+        if (player.hasMetadata("NPC") || !player.isOnline()) return;
+        plugin.getScheduler().runTaskLaterAtLocation(player.getLocation(), () -> checkInventory(player, npc), delay);
     }
 
     @SuppressWarnings("deprecation")
@@ -151,7 +151,7 @@ public final class CitizensDeliverTaskType extends BukkitTaskType {
                     }
                 }
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amount);
         }
     }
 

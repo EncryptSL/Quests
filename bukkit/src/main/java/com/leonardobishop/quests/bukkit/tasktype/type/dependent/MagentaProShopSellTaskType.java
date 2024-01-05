@@ -67,7 +67,7 @@ public class MagentaProShopSellTaskType extends BukkitTaskType {
                 taskProgress.setProgress(amountNeeded);
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amountNeeded);
         }
     }
 }

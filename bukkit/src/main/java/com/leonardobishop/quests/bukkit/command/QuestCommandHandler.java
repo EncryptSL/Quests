@@ -46,7 +46,7 @@ public class QuestCommandHandler implements CommandHandler {
             }
             return;
         }
-        sender.sendMessage(ChatColor.RED + "/quests q/quest <questid> (start|cancel|track)");
+        sender.sendMessage(ChatColor.RED + "/mise q/quest <questid> (start|cancel|track)");
     }
 
     @Override

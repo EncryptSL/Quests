@@ -38,7 +38,7 @@ public class StartCommandHandler implements CommandHandler {
             }
             return;
         }
-        sender.sendMessage(ChatColor.RED + "/quests start <questid>");
+        sender.sendMessage(ChatColor.RED + "/mise start <questid>");
     }
 
     @Override

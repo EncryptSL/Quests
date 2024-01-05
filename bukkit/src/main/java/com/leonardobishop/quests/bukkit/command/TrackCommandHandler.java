@@ -38,7 +38,7 @@ public class TrackCommandHandler implements CommandHandler {
             }
             return;
         }
-        sender.sendMessage(ChatColor.RED + "/quests track <questid>");
+        sender.sendMessage(ChatColor.RED + "/mise track <questid>");
     }
 
     @Override

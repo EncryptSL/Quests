@@ -1,6 +1,7 @@
 package com.leonardobishop.quests.bukkit.command;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
+import com.leonardobishop.quests.bukkit.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
@@ -18,11 +19,9 @@ public class AdminDebugCommandSwitcher extends CommandSwitcher {
     public void showHelp(CommandSender sender) {
         sender.sendMessage(ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH + "------------=[" + ChatColor.RED + " Quests Admin: debug " + ChatColor
                 .GRAY + ChatColor.STRIKETHROUGH + "]=------------");
-        sender.sendMessage(ChatColor.GRAY + "The following commands are available: ");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a debug report " + ChatColor.DARK_GRAY
-                + ": generate a debug report");
-        sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + "/quests a debug quest <player> <self|all> " + ChatColor.DARK_GRAY
-                + ": enable debug logging for a specific quest");
+        sender.sendMessage(StringUtils.colorized( "&7K dispozici jsou následující příkazy: "));
+        sender.sendMessage(StringUtils.colorized("&8&l| &e/quests a debug report &7: generate a debug report"));
+        sender.sendMessage("&8&l| &e/quests a debug quest <player> <self|all> &7: enable debug logging for a specific quest");
     }
 
     @Override

@@ -19,11 +19,11 @@ public class AdminReloadCommandHandler implements CommandHandler {
 
     @Override
     public void handle(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.GRAY + "Please note that some options, such as storage, require a full restart for chances to take effect.");
+        sender.sendMessage(ChatColor.GRAY + "Některé změny, například uložitě mohou vyžadovat úplný restart.");
         plugin.reloadConfig();
         plugin.reloadQuests();
         if (!plugin.getConfigProblems().isEmpty()) CommandUtils.showProblems(sender, plugin.getConfigProblems());
-        sender.sendMessage(ChatColor.GREEN + "Quests successfully reloaded.");
+        sender.sendMessage(ChatColor.GREEN + "Konfigurace se znovu načetla.");
     }
 
     @Override

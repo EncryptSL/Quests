@@ -39,7 +39,7 @@ public class AdminModdataResetCommandHandler implements CommandHandler {
             return;
         }
 
-        sender.sendMessage(ChatColor.RED + "/quests a/admin moddata reset <player> <quest>");
+        sender.sendMessage(ChatColor.RED + "/mise a/admin moddata reset <player> <quest>");
     }
 
     @Override

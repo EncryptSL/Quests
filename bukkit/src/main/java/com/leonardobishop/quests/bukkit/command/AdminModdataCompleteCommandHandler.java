@@ -39,7 +39,7 @@ public class AdminModdataCompleteCommandHandler implements CommandHandler {
             return;
         }
 
-        sender.sendMessage(ChatColor.RED + "/quests a/admin moddata complete <player> <quest>");
+        sender.sendMessage(ChatColor.RED + "/mise a/admin moddata complete <player> <quest>");
     }
 
 

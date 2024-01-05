@@ -82,7 +82,7 @@ public class AdminModdataRandomCommandHandler implements CommandHandler {
             });
         }
 
-        sender.sendMessage(ChatColor.RED + "/quests a/admin moddata random <player> [category]");
+        sender.sendMessage(ChatColor.RED + "/mise a/admin moddata random <player> [category]");
     }
 
     @Override

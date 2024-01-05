@@ -105,7 +105,7 @@ public final class MythicMobsKillingTaskType extends BukkitTaskType {
 
             super.debug("Player killed mythic mob '" + mobName + "' (level = " + level + ")", quest.getId(), task.getId(), player.getUniqueId());
 
-            if (!TaskUtils.matchString(this, pendingTask, "name", "names", mobName, false, false, player.getUniqueId())) {
+            if (!TaskUtils.matchString(this, pendingTask, mobName, player.getUniqueId(), "name", "names", false, false)) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }
@@ -129,7 +129,7 @@ public final class MythicMobsKillingTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amount);
         }
     }
 

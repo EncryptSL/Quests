@@ -48,7 +48,7 @@ public class RewardsClaimTaskType extends BukkitTaskType {
 
             super.debug("Player claimed reward", quest.getId(), task.getId(), player.getUniqueId());
 
-            if (!TaskUtils.matchString(this, pendingTask, "reward", "rewards", reward, false, false, player.getUniqueId())) {
+            if (!TaskUtils.matchString(this, pendingTask, reward, player.getUniqueId(), "reward", "rewards", false, false)) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }
@@ -61,7 +61,7 @@ public class RewardsClaimTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress);
+            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, rewardsNeeded);
         }
 
     }
