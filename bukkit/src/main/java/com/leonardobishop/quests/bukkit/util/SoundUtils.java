@@ -15,17 +15,41 @@ public class SoundUtils {
     public static void playSoundForPlayer(Player player, String soundString) {
         if (soundString == null || soundString.isEmpty()) return;
 
-        String[] parts = soundString.split(Pattern.quote(":"));
-        float pitch = 1;
-        float volume = 3;
-        try {
-            switch (parts.length) {
-                case 3:
-                    volume = Float.parseFloat(parts[2]);
-                case 2:
-                    pitch = Float.parseFloat(parts[1]);
+        String[] parts = soundString.split(":");
+        boolean namespaced = parts.length >= 2 && parts[0].startsWith("(") && parts[1].endsWith(")");
+
+        // (namespace:key):pitch:volume
+        // 0          1    2     3
+        // ENTITY_PLAYER_LEVELUP:2:3
+        // 0                     1 2
+        int pitchIndex = namespaced ? 2 : 1;
+        int volumeIndex = pitchIndex + 1;
+
+        float pitch = 1.0f;
+        if (parts.length >= pitchIndex + 1) {
+            try {
+                pitch = Float.parseFloat(parts[pitchIndex]);
+            } catch (NumberFormatException ignored) {
             }
-        } catch (NumberFormatException ignored) { }
+        }
+
+        float volume = 3.0f;
+        if (parts.length >= volumeIndex + 1) {
+            try {
+                volume = Float.parseFloat(parts[volumeIndex]);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        if (namespaced) {
+            // 0123456789
+            // (space:id)
+            // (space - length 6
+            // id) - length 3
+            String sound = soundString.substring(1, parts[0].length() + parts[1].length());
+            player.playSound(player.getLocation(), sound, volume, pitch);
+            return;
+        }
 
         Sound sound;
         try {

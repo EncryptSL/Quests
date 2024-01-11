@@ -20,7 +20,7 @@ repositories {
     maven { url = 'https://libraries.minecraft.net/' }
     // CoreProtect
     maven { url = 'https://maven.playpro.com/' }
-    // EcoBosses
+    // EcoBosses, EcoMobs
     maven { url = 'https://repo.auxilor.io/repository/maven-public/' }
     // EssentialsX
     maven { url = 'https://repo.essentialsx.net/releases/' }
@@ -71,6 +71,7 @@ dependencies {
     compileOnly 'net.coreprotect:coreprotect:21.2'
     // EcoBosses
     compileOnly 'com.willfp:EcoBosses:9.14.0'
+    compileOnly 'com.willfp:EcoMobs:10.0.0-b1'
     compileOnly 'com.willfp:eco:6.65.1'
     compileOnly 'com.willfp:libreforge:4.21.1'
     // EssentialsX

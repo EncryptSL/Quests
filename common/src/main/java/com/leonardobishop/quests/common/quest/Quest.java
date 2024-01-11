@@ -15,6 +15,7 @@ public class Quest implements Comparable<Quest> {
     private List<String> rewardString;
     private List<String> startString;
     private List<String> startCommands;
+    private List<String> cancelCommands;
     private boolean repeatEnabled;
     private boolean cooldownEnabled;
     private int cooldown;
@@ -156,6 +157,16 @@ public class Quest implements Comparable<Quest> {
     }
 
     /**
+     * Get the cancel commands for this quest.
+     * The cancel commands is a list of commands to be executed upon cancelling the quest.
+     *
+     * @return immutable list of commands
+     */
+    public List<String> getCancelCommands() {
+        return Collections.unmodifiableList(cancelCommands);
+    }
+
+    /**
      * Get if this quest can be repeated after completion.
      *
      * @return boolean
@@ -288,6 +299,7 @@ public class Quest implements Comparable<Quest> {
         private List<String> rewardString = Collections.emptyList();
         private List<String> startString = Collections.emptyList();
         private List<String> startCommands = Collections.emptyList();
+        private List<String> cancelCommands = Collections.emptyList();
         private boolean repeatEnabled = false;
         private boolean cooldownEnabled = false;
         private int cooldown = 0;
@@ -328,6 +340,11 @@ public class Quest implements Comparable<Quest> {
 
         public Builder withStartCommands(List<String> startCommands) {
             this.startCommands = startCommands;
+            return this;
+        }
+
+        public Builder withCancelCommands(List<String> cancelCommands) {
+            this.cancelCommands = cancelCommands;
             return this;
         }
 

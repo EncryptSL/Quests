@@ -33,9 +33,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BukkitQuestsLoader implements QuestsLoader {
-
     private final BukkitQuestsPlugin plugin;
     private final BukkitQuestsConfig questsConfig;
     private final QuestManager questManager;
@@ -253,6 +253,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                         List<String> rewardString = config.getStringList("rewardstring");
                         List<String> startString = config.getStringList("startstring");
                         List<String> startCommands = config.getStringList("startcommands");
+                        List<String> cancelCommands = config.getStringList("cancelcommands");
                         boolean repeatable = config.getBoolean("options.repeatable", false);
                         boolean cooldown = config.getBoolean("options.cooldown.enabled", false);
                         boolean timeLimit = config.getBoolean("options.time-limit.enabled", false);
@@ -283,6 +284,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                                 .withRewardString(rewardString)
                                 .withStartString(startString)
                                 .withStartCommands(startCommands)
+                                .withCancelCommands(cancelCommands)
                                 .withPlaceholders(placeholders)
                                 .withProgressPlaceholders(progressPlaceholders)
                                 .withCooldown(cooldownTime)
@@ -303,9 +305,10 @@ public class BukkitQuestsLoader implements QuestsLoader {
                             if (c != null) {
                                 c.registerQuestId(id);
                             } else {
+                                String allCategories = questManager.getCategories().stream().map(Category::getId).collect(Collectors.joining(", "));
                                 problems.add(new ConfigProblem(ConfigProblem.ConfigProblemType.WARNING,
-                                        ConfigProblemDescriptions.UNKNOWN_CATEGORY.getDescription(category),
-                                        ConfigProblemDescriptions.UNKNOWN_CATEGORY.getExtendedDescription(category),
+                                        ConfigProblemDescriptions.UNKNOWN_CATEGORY.getDescription(allCategories),
+                                        ConfigProblemDescriptions.UNKNOWN_CATEGORY.getExtendedDescription(allCategories),
                                         "options.category"));
                             }
                         }
@@ -314,6 +317,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                             String taskRoot = "tasks." + taskId;
                             String taskType = config.getString(taskRoot + ".type");
                             String resolvedTaskTypeName = taskTypeManager.resolveTaskTypeName(taskType);
+                            if (resolvedTaskTypeName == null) continue;
 
                             Task task = new Task(taskId, resolvedTaskTypeName);
 
@@ -529,5 +533,4 @@ public class BukkitQuestsLoader implements QuestsLoader {
 
         return new QItemStack(plugin, name, loreNormal, loreStarted, is);
     }
-
 }
