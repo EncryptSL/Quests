@@ -128,7 +128,8 @@ public abstract class PaginatedQMenu extends QMenu {
 
             // else find a place for the back button if needed
         } else if (backMenuElement != null && backMenuElement.isEnabled()) {
-            int slot = MenuUtils.getHigherOrEqualMultiple(menuElements.size() + menuElementsToFill.size() + customStaticElements, 9);
+            int slot = trim ? MenuUtils.getHigherOrEqualMultiple(menuElements.size() + menuElementsToFill.size() + customStaticElements, 9)
+                            : backMenuElement.getSlot();
             staticMenuElements[slot] = backMenuElement;
         }
 
