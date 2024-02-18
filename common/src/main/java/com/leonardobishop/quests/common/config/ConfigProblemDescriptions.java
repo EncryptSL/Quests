@@ -10,8 +10,8 @@ public enum ConfigProblemDescriptions {
                     "%s"
     ),
     INVALID_QUEST_ID(
-            "ID '%s' is invalid, must be alphanumeric, unique and with no spaces",
-            "ID '%s' is invalid. Either another quest is<br>" +
+            "ID %s is invalid, must be alphanumeric, unique and with no spaces",
+            "ID %s is invalid. Either another quest is<br>" +
                     "using this ID, or it is not alphanumeric.<br><br>" +
                     "Examples:<br>" +
                     "Valid: 'abc'<br>" +
@@ -46,14 +46,14 @@ public enum ConfigProblemDescriptions {
             "No material for this quest display item<br>" +
                     "has been specified."
     ),
-    UNKNOWN_QUEST_ITEM("Quest item '%s' does not exist",
-            "A quest item named '%s' does not exist.<br>" +
+    UNKNOWN_QUEST_ITEM("Quest item %s does not exist",
+            "A quest item named %s does not exist.<br>" +
                     "Quest items are stored in /plugins/Quests/items,<br>" +
                     "by their ID. The ID does not include the .yml<br>" +
                     "extension."
     ),
-    UNKNOWN_MATERIAL("Material '%s' does not exist or is unsuitable",
-            "Material '%s' does not exist on the server<br>" +
+    UNKNOWN_MATERIAL("Material %s does not exist or is unsuitable",
+            "Material %s does not exist on the server<br>" +
                     "or is unsuitable to the chosen task type. Ensure that<br>" +
                     "the material is the adequate one for the specified<br>" +
                     "item or block. Please refer to the wiki for a list of javadocs<br>" +
@@ -61,37 +61,37 @@ public enum ConfigProblemDescriptions {
                     "you can find the material list by searching for your<br>" +
                     "server version + 'Material ENUM'."
     ),
-    UNKNOWN_DYE_COLOR("Dye color '%s' does not exist",
+    UNKNOWN_DYE_COLOR("Dye color %s does not exist",
             "Dye color '%s' does not exist on the server.<br>" +
                     "Please refer to the wiki for a list of javadocs<br>" +
                     "corresponding to your server version. Alternatively,<br>" +
                     "you can find the material list by searching for your<br>" +
                     "server version + 'DyeColor ENUM'."),
-    UNKNOWN_ENCHANTMENT("Enchantment '%s' does not exist",
-            "Enchantment '%s' does not exist on the server.<br>" +
+    UNKNOWN_ENCHANTMENT("Enchantment %s does not exist",
+            "Enchantment %s does not exist on the server.<br>" +
                     "Please refer to the wiki for a list of javadocs<br>" +
                     "corresponding to your server version. Alternatively,<br>" +
                     "you can find the material list by searching for your<br>" +
                     "server version + 'Enchantment javadoc'."
     ),
-    UNKNOWN_ENTITY_TYPE("Entity type '%s' does not exist",
-            "Entity type '%s' does not exist on the server.<br>" +
+    UNKNOWN_ENTITY_TYPE("Entity type %s does not exist",
+            "Entity type %s does not exist on the server.<br>" +
                     "Please refer to the wiki for a list of javadocs<br>" +
                     "corresponding to your server version. Alternatively,<br>" +
                     "you can find the material list by searching for your<br>" +
                     "server version + 'EntityType ENUM'."),
-    TASK_MALFORMED_NOT_SECTION("Task '%s' is not a configuration section",
+    TASK_MALFORMED_NOT_SECTION("Task %s is not a configuration section",
             "Task '%s' is not properly formatted as a<br>" +
                     "configuration section. Please review the wiki<br>" +
                     "for the correct format of a task type."
     ),
-    TASK_MISSING_FIELD("Required field '%s' is missing for task type '%s'",
-            "Field '%s' must be set for task '%s'<br>" +
+    TASK_MISSING_FIELD("Required field '%s' is missing for task type %s",
+            "Field %s must be set for task %s<br>" +
                     "to function as expected. Please review<br>" +
                     "the relevant documentation on the wiki for<br>" +
                     "a list of mandatory fields."
     ),
-    UNKNOWN_TASK_REFERENCE("Attempt to reference unknown task '%s'",
+    UNKNOWN_TASK_REFERENCE("Attempt to reference unknown task %s",
             "A task by the ID '%s' has not been configured<br>" +
                     "for this quest. Note that the task ID can differ<br>" +
                     "from its task type. The ID is set by you; it is<br>" +
@@ -105,9 +105,9 @@ public enum ConfigProblemDescriptions {
     UNKNOWN_CATEGORY("Category '%s' does not exist (I only know: %s)",
             "Category by the ID '%s' does not exist. The only known ones are: %s"
     ),
-    UNKNOWN_REQUIREMENT("Quest requirement '%s' does not exist",
+    UNKNOWN_REQUIREMENT("Quest requirement %s does not exist",
                     "This may be the result of a cascading error<br>" +
-                    "if '%s' failed to load, or a mis-typed ID."
+                    "if %s failed to load, or a mis-typed ID."
     ),
     NOT_ACCEPTED_VALUE("Value '%s' is not in the list of accepted values for task %s", null);
 

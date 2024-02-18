@@ -48,6 +48,7 @@ import com.leonardobishop.quests.bukkit.storage.MySqlStorageProvider;
 import com.leonardobishop.quests.bukkit.storage.YamlStorageProvider;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskTypeManager;
 import com.leonardobishop.quests.bukkit.tasktype.type.*;
+import com.leonardobishop.quests.bukkit.tasktype.type.InteractTaskType;
 import com.leonardobishop.quests.bukkit.tasktype.type.dependent.*;
 import com.leonardobishop.quests.bukkit.util.CompatUtils;
 import com.leonardobishop.quests.bukkit.util.LogHistory;
@@ -392,6 +393,8 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(() -> new MagentaProVotePartyTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
             taskTypeManager.registerTaskType(() -> new MagentaProWinVotePartyTaskType(this), () -> CompatUtils.isPluginEnabled("MagentaPro"));
             taskTypeManager.registerTaskType(() -> new RewardsClaimTaskType(this), () -> CompatUtils.isPluginEnabled("Rewards"));
+            taskTypeManager.registerTaskType(() -> new ServerNPCDeliverTaskType(this), () -> CompatUtils.isPluginEnabled("ServerNPC") && CompatUtils.classWithMethodExists("com.isnakebuzz.npcapi.entities.SnakeNPC", "getSettings"));
+            taskTypeManager.registerTaskType(() -> new ServerNPCInteractTaskType(this), () -> CompatUtils.isPluginEnabled("ServerNPC") && CompatUtils.classWithMethodExists("com.isnakebuzz.npcapi.entities.SnakeNPC", "getSettings"));
             taskTypeManager.registerTaskType(() -> new ShopGUIPlusBuyTaskType(this), () -> CompatUtils.isPluginEnabled("ShopGUIPlus")); // not tested
             taskTypeManager.registerTaskType(() -> new ShopGUIPlusSellTaskType(this), () -> CompatUtils.isPluginEnabled("ShopGUIPlus")); // not tested
             taskTypeManager.registerTaskType(() -> new SuperiorSkyblockLevelType(this), () -> CompatUtils.isPluginEnabled("SuperiorSkyblock2")); // not tested
@@ -399,6 +402,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(() -> new uSkyBlockLevelTaskType(this), () -> CompatUtils.isPluginEnabled("uSkyBlock"));
             taskTypeManager.registerTaskType(() -> new NuVotifierVoteTaskType(this), () -> CompatUtils.isPluginEnabled("Votifier")); // not tested
             taskTypeManager.registerTaskType(() -> new VotingPluginVoteType(this), () -> CompatUtils.isPluginEnabled("VotingPlugin")); // not tested
+            taskTypeManager.registerTaskType(() -> new ZNPCsPlusDeliverTaskType(this), () -> CompatUtils.isPluginEnabled("ZNPCsPlus"));
 
             // Register task types with enabled specific version plugin compatibility requirement
             taskTypeManager.registerTaskType(() -> new IridiumSkyblockValueTaskType(this), () -> { // TODO FIX
