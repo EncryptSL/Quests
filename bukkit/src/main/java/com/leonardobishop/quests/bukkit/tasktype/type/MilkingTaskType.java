@@ -9,33 +9,47 @@ import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
 import org.bukkit.Material;
-import org.bukkit.entity.Cow;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.ItemStack;
 
 public final class MilkingTaskType extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
 
     public MilkingTaskType(BukkitQuestsPlugin plugin) {
-        super("milking", TaskUtils.TASK_ATTRIBUTION_STRING, "Milk a set amount of cows.");
+        super("milking", TaskUtils.TASK_ATTRIBUTION_STRING, "Milk a set amount of cows or goats.");
         this.plugin = plugin;
 
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
     }
 
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onMilk(PlayerInteractEntityEvent event) {
-        if (!(event.getRightClicked() instanceof Cow) || (plugin.getVersionSpecificHandler().getItemInMainHand(event.getPlayer()).getType() != Material.BUCKET)) {
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        Entity entity = event.getRightClicked();
+        if (!(entity instanceof Cow || plugin.getVersionSpecificHandler().isGoat(entity))) {
             return;
         }
 
-        if (event.getPlayer().hasMetadata("NPC")) return;
+        Animals animals = (Animals) entity;
+        if (!animals.isAdult()) {
+            return;
+        }
 
         Player player = event.getPlayer();
+        if (player.hasMetadata("NPC")) {
+            return;
+        }
+
+        ItemStack item = plugin.getVersionSpecificHandler().getItemInMainHand(player);
+        if (item.getType() != Material.BUCKET) {
+            return;
+        }
 
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
         if (qPlayer == null) {
@@ -47,18 +61,29 @@ public final class MilkingTaskType extends BukkitTaskType {
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
 
-            super.debug("Player milked cow", quest.getId(), task.getId(), player.getUniqueId());
+            super.debug("Player milked " + entity.getType(), quest.getId(), task.getId(), player.getUniqueId());
+
+            if (!TaskUtils.matchEntity(this, pendingTask, entity, player.getUniqueId())) {
+                super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
+            }
+
+            if (!TaskUtils.matchSpawnReason(this, pendingTask, entity, player.getUniqueId())) {
+                super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
+            }
 
             int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress);
             super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());
 
-            int breedingNeeded = (int) task.getConfigValue("amount");
+            int amount = (int) task.getConfigValue("amount");
 
-            if (progress >= breedingNeeded) {
+            if (progress >= amount) {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, breedingNeeded);
+
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, amount);
         }
     }
 

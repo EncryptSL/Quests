@@ -8,17 +8,15 @@ import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class PlayerDropItemTaskType extends BukkitTaskType {
 
-    private BukkitQuestsPlugin plugin;
+    private final BukkitQuestsPlugin plugin;
 
     public PlayerDropItemTaskType(BukkitQuestsPlugin plugin) {
         super("player_drop_item", TaskUtils.TASK_ATTRIBUTION_STRING, "Drop certain amount of items from a player inventory.", "p_drop_items");

@@ -28,6 +28,7 @@ public final class NuVotifierVoteTaskType extends BukkitTaskType {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onVote(VotifierEvent event) {
         String voter = event.getVote().getUsername();
+        String serviceSite = event.getVote().getServiceName();
         Player player = Bukkit.getPlayer(voter);
 
         if (player == null) {
@@ -47,6 +48,11 @@ public final class NuVotifierVoteTaskType extends BukkitTaskType {
             super.debug("Player voted", quest.getId(), task.getId(), player.getUniqueId());
 
             int votesNeeded = (int) task.getConfigValue("amount");
+
+            if (!TaskUtils.matchString(this, pendingTask, serviceSite, player.getUniqueId(), "service", "services", false, true)) {
+                super.debug("Not found service site continue", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
+            }
 
             int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress);
             super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());

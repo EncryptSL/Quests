@@ -9,6 +9,7 @@ import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,6 +28,10 @@ public class MagentaProDeleteWarpTaskType extends BukkitTaskType {
     public void onDeleteWarp(WarpDeleteEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         Player player = Bukkit.getPlayer(uuid);
+        if (player instanceof ConsoleCommandSender) {
+            return;
+        }
+
         if (player == null || player.hasMetadata("NPC")) {
             return;
         }
