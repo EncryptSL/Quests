@@ -16,6 +16,7 @@ public class Quest implements Comparable<Quest> {
     private List<String> startString;
     private List<String> startCommands;
     private List<String> cancelCommands;
+    private List<String> expiryCommands;
     private boolean repeatEnabled;
     private boolean cooldownEnabled;
     private int cooldown;
@@ -167,6 +168,16 @@ public class Quest implements Comparable<Quest> {
     }
 
     /**
+     * Get the expiry commands for this quest.
+     * The expiry commands is a list of commands to be executed upon expiring the quest.
+     *
+     * @return immutable list of commands
+     */
+    public List<String> getExpiryCommands() {
+        return Collections.unmodifiableList(expiryCommands);
+    }
+
+    /**
      * Get if this quest can be repeated after completion.
      *
      * @return boolean
@@ -300,6 +311,7 @@ public class Quest implements Comparable<Quest> {
         private List<String> startString = Collections.emptyList();
         private List<String> startCommands = Collections.emptyList();
         private List<String> cancelCommands = Collections.emptyList();
+        private List<String> expiryCommands = Collections.emptyList();
         private boolean repeatEnabled = false;
         private boolean cooldownEnabled = false;
         private int cooldown = 0;
@@ -345,6 +357,11 @@ public class Quest implements Comparable<Quest> {
 
         public Builder withCancelCommands(List<String> cancelCommands) {
             this.cancelCommands = cancelCommands;
+            return this;
+        }
+
+        public Builder withExpiryCommands(List<String> expiryCommands) {
+            this.expiryCommands = expiryCommands;
             return this;
         }
 
@@ -421,6 +438,8 @@ public class Quest implements Comparable<Quest> {
             quest.rewardString = this.rewardString;
             quest.startString = this.startString;
             quest.startCommands = this.startCommands;
+            quest.cancelCommands = this.cancelCommands;
+            quest.expiryCommands = this.expiryCommands;
             quest.repeatEnabled = this.repeatEnabled;
             quest.cooldownEnabled = this.cooldownEnabled;
             quest.cooldown = this.cooldown;

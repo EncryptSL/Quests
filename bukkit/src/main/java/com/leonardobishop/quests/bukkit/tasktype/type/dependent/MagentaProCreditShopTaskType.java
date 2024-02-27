@@ -18,7 +18,7 @@ import java.util.UUID;
 public class MagentaProCreditShopTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
     public MagentaProCreditShopTaskType(BukkitQuestsPlugin plugin) {
-        super("creditshop_buy", TaskUtils.TASK_ATTRIBUTION_STRING, "Buy something from creditshop", "creditshop_buy_certain");
+        super("credit_shop_buy", TaskUtils.TASK_ATTRIBUTION_STRING, "Buy something from creditshop", "cshop_buy");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "price-expect"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
@@ -28,8 +28,7 @@ public class MagentaProCreditShopTaskType extends BukkitTaskType {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCreditShopBuy(CreditShopBuyEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        int price = event.getPrice();
-        int quantity = event.getQuantity();
+
         Player player = Bukkit.getPlayer(uuid);
         if (player == null || player.hasMetadata("NPC")) {
             return;
@@ -49,7 +48,7 @@ public class MagentaProCreditShopTaskType extends BukkitTaskType {
 
             int buyNeeded = (int) task.getConfigValue("amount");
             int progress = TaskUtils.getIntegerTaskProgress(taskProgress);
-            int newProgress = TaskUtils.getConfigBoolean(task, "price-expect") ? progress + price : progress + quantity;
+            int newProgress = TaskUtils.getConfigBoolean(task, "price-expect") ? progress + event.getPrice() : progress + event.getQuantity();
             taskProgress.setProgress(newProgress);
             super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());
 
@@ -58,7 +57,7 @@ public class MagentaProCreditShopTaskType extends BukkitTaskType {
                 taskProgress.setProgress(buyNeeded);
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, buyNeeded);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, buyNeeded);
         }
     }
 }

@@ -95,7 +95,7 @@ public final class EssentialsBalanceTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, earningsNeeded);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, earningsNeeded);
         }
     }
 

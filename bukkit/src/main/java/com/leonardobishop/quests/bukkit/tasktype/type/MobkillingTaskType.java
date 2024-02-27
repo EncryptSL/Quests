@@ -17,6 +17,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,6 +33,7 @@ public final class MobkillingTaskType extends BukkitTaskType {
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useEntityListConfigValidator(this, "mob", "mobs"));
+        super.addConfigValidator(TaskUtils.useSpawnReasonListConfigValidator(this, "spawn-reason", "spawn-reasons"));
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "hostile"));
         super.addConfigValidator(TaskUtils.useItemStackConfigValidator(this, "item"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "data"));
@@ -45,7 +47,13 @@ public final class MobkillingTaskType extends BukkitTaskType {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
-        Player player = event.getEntity().getKiller();
+        LivingEntity entity = event.getEntity();
+        Player player = entity.getKiller();
+
+        handle(player, entity, 1);
+    }
+
+    private void handle(Player player, LivingEntity entity, int eventAmount) {
         if (player == null) {
             return;
         }
@@ -59,13 +67,14 @@ public final class MobkillingTaskType extends BukkitTaskType {
             return;
         }
 
-        LivingEntity entity = event.getEntity();
         if (entity instanceof Player) {
             return;
         }
 
+        CreatureSpawnEvent.SpawnReason spawnReason = entity.getEntitySpawnReason();
+
         //noinspection deprecation
-        final String customName = entity.getCustomName();
+        String customName = entity.getCustomName();
 
         for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this, TaskConstraintSet.ALL)) {
             Quest quest = pendingTask.quest();
@@ -87,6 +96,11 @@ public final class MobkillingTaskType extends BukkitTaskType {
             }
 
             if (!TaskUtils.matchEntity(this, pendingTask, entity, player.getUniqueId())) {
+                super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
+            }
+
+            if (!TaskUtils.matchSpawnReason(this, pendingTask, spawnReason, player.getUniqueId())) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }
@@ -121,7 +135,7 @@ public final class MobkillingTaskType extends BukkitTaskType {
                 }
             }
 
-            int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress);
+            int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress, eventAmount);
             super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());
 
             int amount = (int) task.getConfigValue("amount");
@@ -130,7 +144,8 @@ public final class MobkillingTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amount);
+
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, amount);
         }
     }
 }

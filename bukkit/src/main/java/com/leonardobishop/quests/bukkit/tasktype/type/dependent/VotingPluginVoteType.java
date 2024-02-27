@@ -29,6 +29,7 @@ public final class VotingPluginVoteType extends BukkitTaskType {
     public void onVote(PlayerVoteEvent event) {
         String voter = event.getPlayer();
         Player player = Bukkit.getPlayer(voter);
+        String serviceSite = event.getServiceSite();
 
         if (player == null) {
             return;
@@ -46,6 +47,11 @@ public final class VotingPluginVoteType extends BukkitTaskType {
 
             super.debug("Player voted", quest.getId(), task.getId(), player.getUniqueId());
 
+            if (!TaskUtils.matchString(this, pendingTask, serviceSite, player.getUniqueId(), "service", "services", false, true)) {
+                super.debug("Not found service site continue", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
+            }
+
             int votesNeeded = (int) task.getConfigValue("amount");
 
             int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress);
@@ -55,7 +61,7 @@ public final class VotingPluginVoteType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, votesNeeded);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, votesNeeded);
         }
     }
 

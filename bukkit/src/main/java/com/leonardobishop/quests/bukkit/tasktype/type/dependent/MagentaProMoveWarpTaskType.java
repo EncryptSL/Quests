@@ -18,7 +18,7 @@ import java.util.UUID;
 public class MagentaProMoveWarpTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
     public MagentaProMoveWarpTaskType(BukkitQuestsPlugin plugin) {
-        super("magentapro_movewarp", TaskUtils.TASK_ATTRIBUTION_STRING, "Create home in plugin MagentaPro", "mg_mvwarp_certain");
+        super("magenta_move_warp", TaskUtils.TASK_ATTRIBUTION_STRING, "Create home in plugin MagentaPro", "mg_mvwarp");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
@@ -51,7 +51,7 @@ public class MagentaProMoveWarpTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, needed);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, needed);
         }
     }
 }

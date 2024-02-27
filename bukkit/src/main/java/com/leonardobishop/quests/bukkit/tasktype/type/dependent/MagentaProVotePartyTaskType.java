@@ -15,7 +15,7 @@ import org.bukkit.event.EventPriority;
 public class MagentaProVotePartyTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
     public MagentaProVotePartyTaskType(BukkitQuestsPlugin plugin) {
-        super("mg_voteparty", TaskUtils.TASK_ATTRIBUTION_STRING, "Be online on voteparty", "mg_vparty_certain");
+        super("magenta_vote_party", TaskUtils.TASK_ATTRIBUTION_STRING, "Be online on voteparty", "mg_vparty");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "players-expect"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "online-players"));
@@ -27,6 +27,8 @@ public class MagentaProVotePartyTaskType extends BukkitTaskType {
     public void onVoteParty(VotePartyEvent event) {
         Player player = event.getPlayer();
         int onlinePlayers = event.getPlayers();
+
+        if (player.hasMetadata("NPC")) return;
 
         QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
         if (qPlayer == null) {
@@ -57,7 +59,7 @@ public class MagentaProVotePartyTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, votesNeeded);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, votesNeeded);
         }
     }
 }

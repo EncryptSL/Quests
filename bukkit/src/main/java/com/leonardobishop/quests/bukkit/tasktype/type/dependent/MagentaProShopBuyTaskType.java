@@ -20,12 +20,12 @@ public class MagentaProShopBuyTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
 
     public MagentaProShopBuyTaskType(BukkitQuestsPlugin plugin) {
-        super("mg_shop_buy", TaskUtils.TASK_ATTRIBUTION_STRING, "Buy something from magenta vault shop", "mg_shop_buy_certain");
+        super("magenta_shop_buy", TaskUtils.TASK_ATTRIBUTION_STRING, "Buy something from magenta vault shop", "mg_shop_buy");
         this.plugin = plugin;
-        super.addConfigValidator(TaskUtils.useItemStackConfigValidator(this, "item"));
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "price-accepting"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
+        super.addConfigValidator(TaskUtils.useMaterialListConfigValidator(this, TaskUtils.MaterialListConfigValidatorMode.ITEM, "item", "items"));
     }
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMagentaProShopBuy(ShopBuyEvent event) {
@@ -48,12 +48,11 @@ public class MagentaProShopBuyTaskType extends BukkitTaskType {
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
 
-            if (task.hasConfigKey("item")) {
-                String taskItemId = (String) task.getConfigValue("item");
-                if (taskItemId == null || !taskItemId.equals(item)) {
-                    super.debug("Item id does not match required id, continuing...", quest.getId(), task.getId(), player.getUniqueId());
-                    continue;
-                }
+            super.debug("Player buy item from shop", quest.getId(), task.getId(), player.getUniqueId());
+
+            if (!TaskUtils.matchString(this, pendingTask, item, player.getUniqueId(), "item", "items", false, true)) {
+                super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                continue;
             }
 
             int amountNeeded = (int) task.getConfigValue("amount");
@@ -68,7 +67,7 @@ public class MagentaProShopBuyTaskType extends BukkitTaskType {
                 taskProgress.setProgress(amountNeeded);
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amountNeeded);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, amountNeeded);
         }
     }
 

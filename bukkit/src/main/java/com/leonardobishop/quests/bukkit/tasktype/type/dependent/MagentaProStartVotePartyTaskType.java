@@ -17,7 +17,7 @@ public class MagentaProStartVotePartyTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
 
     public MagentaProStartVotePartyTaskType(BukkitQuestsPlugin plugin) {
-        super("magenta_start_vp", TaskUtils.TASK_ATTRIBUTION_STRING, "Start VoteParty like a last player", "mg_start_vp_certain");
+        super("magenta_start_vp", TaskUtils.TASK_ATTRIBUTION_STRING, "Start VoteParty like a last player", "mg_start_vp");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
@@ -47,7 +47,7 @@ public class MagentaProStartVotePartyTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, needed);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, needed);
         }
     }
 

@@ -25,6 +25,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Colorable;
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +74,7 @@ public class TaskUtils {
         Object configObject = task.getConfigValue(key);
         if (configObject instanceof List list) {
             return List.copyOf(list);
-        } else if (configObject instanceof String s){
+        } else if (configObject instanceof String s) {
             return List.of(s);
         } else {
             return null;
@@ -150,7 +151,9 @@ public class TaskUtils {
         return progress;
     }
 
-    public static void sendTrackAdvancement(Player player, Quest quest, Task task, TaskProgress taskProgress, Number amount) {
+    public static void sendTrackAdvancement(Player player, Quest quest, Task task, PendingTask pendingTask, Number amount) {
+        TaskProgress taskProgress = pendingTask.taskProgress();
+
         boolean useActionBar = plugin.getConfig().getBoolean("options.actionbar.progress", false)
                 || (taskProgress.isCompleted() && plugin.getConfig().getBoolean("options.actionbar.complete", false));
         boolean useBossBar = plugin.getConfig().getBoolean("options.bossbar.progress", false)
@@ -164,6 +167,11 @@ public class TaskUtils {
         titleSearch:
         {
             title = quest.getProgressPlaceholders().get(task.getId()); // custom title
+            if (title != null) {
+                break titleSearch;
+            }
+
+            title = quest.getProgressPlaceholders().get(task.getType()); // one title for all tasks of the same type
             if (title != null) {
                 break titleSearch;
             }
@@ -186,7 +194,8 @@ public class TaskUtils {
             return; // no valid title format found
         }
 
-        title = QItemStack.processPlaceholders(title, taskProgress);
+        QuestProgress questProgress = pendingTask.questProgress();
+        title = QItemStack.processPlaceholders(title, questProgress, taskProgress);
 
         boolean usePlaceholderAPI = plugin.getQuestsConfig().getBoolean("options.progress-use-placeholderapi", false);
         if (usePlaceholderAPI) {
@@ -264,7 +273,8 @@ public class TaskUtils {
         return tasks;
     }
 
-    public record PendingTask(Quest quest, Task task, QuestProgress questProgress, TaskProgress taskProgress) { }
+    public record PendingTask(Quest quest, Task task, QuestProgress questProgress, TaskProgress taskProgress) {
+    }
 
     public static boolean matchBlock(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @Nullable Block block, @NotNull UUID player) {
         return matchBlock(type, pendingTask, block, player, "block", "blocks");
@@ -324,7 +334,6 @@ public class TaskUtils {
     public static boolean matchColorable(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @NotNull Colorable colorable, @NotNull UUID player) {
         return matchColorable(type, pendingTask, colorable, player, "color", "colors");
     }
-
 
     public static boolean matchColorable(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @NotNull Colorable colorable, @NotNull UUID player, @NotNull String stringKey, @NotNull String listKey) {
         Task task = pendingTask.task;
@@ -388,6 +397,38 @@ public class TaskUtils {
                 return true;
             } else {
                 type.debug("Mob mismatch", pendingTask.quest.getId(), task.getId(), player);
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean matchSpawnReason(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @NotNull CreatureSpawnEvent.SpawnReason spawnReason, @NotNull UUID player) {
+        return matchSpawnReason(type, pendingTask, spawnReason, player, "spawn-reason", "spawn-reasons");
+    }
+
+    public static boolean matchSpawnReason(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @NotNull CreatureSpawnEvent.SpawnReason spawnReason, @NotNull UUID player, @NotNull String stringKey, @NotNull String listKey) {
+        Task task = pendingTask.task;
+
+        List<String> checkSpawnReasons = TaskUtils.getConfigStringList(task, task.getConfigValues().containsKey(stringKey) ? stringKey : listKey);
+        if (checkSpawnReasons == null) {
+            return true;
+        } else if (checkSpawnReasons.isEmpty()) {
+            return false;
+        }
+
+        CreatureSpawnEvent.SpawnReason reason;
+
+        for (String spawnReasonName : checkSpawnReasons) {
+            reason = CreatureSpawnEvent.SpawnReason.valueOf(spawnReasonName);
+
+            type.debug("Checking against spawn reason " + reason, pendingTask.quest.getId(), task.getId(), player);
+
+            if (reason == spawnReason) {
+                type.debug("Spawn reason match", pendingTask.quest.getId(), task.getId(), player);
+                return true;
+            } else {
+                type.debug("Spawn reason mismatch", pendingTask.quest.getId(), task.getId(), player);
             }
         }
 
@@ -775,8 +816,56 @@ public class TaskUtils {
                         EntityType.valueOf(entity);
                     } catch (IllegalArgumentException ex) {
                         problems.add(new ConfigProblem(ConfigProblem.ConfigProblemType.WARNING,
-                                ConfigProblemDescriptions.UNKNOWN_MATERIAL.getDescription(entity),
-                                ConfigProblemDescriptions.UNKNOWN_MATERIAL.getExtendedDescription(entity),
+                                ConfigProblemDescriptions.UNKNOWN_ENTITY_TYPE.getDescription(entity),
+                                ConfigProblemDescriptions.UNKNOWN_ENTITY_TYPE.getExtendedDescription(entity),
+                                path));
+                    }
+                }
+                break;
+            }
+        };
+    }
+
+    /**
+     * Returns a config validator which checks if at least one value in the given
+     * paths is a valid list of spawn reasons.
+     * <p>
+     * The list of entities is expected to be in the format of:
+     * <pre>key: "SPAWN_REASON"</pre>
+     * where SPAWN_REASON is the name of an entity. Alternatively, the list
+     * of entities can be in the format of:
+     * <pre>key:
+     *   - "SPAWN_REASON"
+     *   - "..."</pre>
+     * </p>
+     *
+     * @param paths a list of valid paths for task
+     * @return config validator
+     */
+    public static TaskType.ConfigValidator useSpawnReasonListConfigValidator(TaskType type, String... paths) {
+        return (config, problems) -> {
+            for (String path : paths) {
+                Object configObject = config.get(path);
+
+                List<String> checkSpawnReasons = new ArrayList<>();
+                if (configObject instanceof List<?> configList) {
+                    for (Object object : configList) {
+                        checkSpawnReasons.add(String.valueOf(object));
+                    }
+                } else {
+                    if (configObject == null) {
+                        continue;
+                    }
+                    checkSpawnReasons.add(String.valueOf(configObject));
+                }
+
+                for (String spawnReason : checkSpawnReasons) {
+                    try {
+                        CreatureSpawnEvent.SpawnReason.valueOf(spawnReason);
+                    } catch (IllegalArgumentException ex) {
+                        problems.add(new ConfigProblem(ConfigProblem.ConfigProblemType.WARNING,
+                                ConfigProblemDescriptions.UNKNOWN_SPAWN_REASON.getDescription(spawnReason),
+                                ConfigProblemDescriptions.UNKNOWN_SPAWN_REASON.getExtendedDescription(spawnReason),
                                 path));
                     }
                 }
@@ -836,7 +925,7 @@ public class TaskUtils {
      * paths is a value in the list of accepted values.
      *
      * @param acceptedValues a list of accepted values
-     * @param paths a list of valid paths for task
+     * @param paths          a list of valid paths for task
      * @return config validator
      */
     public static TaskType.ConfigValidator useAcceptedValuesConfigValidator(TaskType type, List<String> acceptedValues, String... paths) {
@@ -855,9 +944,9 @@ public class TaskUtils {
                         extendedDescription += "<br> - " + value;
                     }
                     problems.add(new ConfigProblem(ConfigProblem.ConfigProblemType.WARNING,
-                        ConfigProblemDescriptions.NOT_ACCEPTED_VALUE.getDescription(String.valueOf(configObject), type.getType()),
-                        extendedDescription,
-                        path));
+                            ConfigProblemDescriptions.NOT_ACCEPTED_VALUE.getDescription(String.valueOf(configObject), type.getType()),
+                            extendedDescription,
+                            path));
                 }
 
                 break;

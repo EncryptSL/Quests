@@ -18,7 +18,7 @@ public class MagentaProWinVotePartyTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
 
     public MagentaProWinVotePartyTaskType(BukkitQuestsPlugin plugin) {
-        super("mg_win_voteparty", TaskUtils.TASK_ATTRIBUTION_STRING, "MagentaPro win in VoteParty event", "mg_win_party_certain");
+        super("magenta_win_voteparty", TaskUtils.TASK_ATTRIBUTION_STRING, "MagentaPro win in VoteParty event", "mg_win_party");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
@@ -51,7 +51,7 @@ public class MagentaProWinVotePartyTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, needed);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, needed);
         }
     }
 

@@ -1,10 +1,13 @@
 package com.leonardobishop.quests.bukkit.tasktype.type;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
+import com.leonardobishop.quests.bukkit.hook.essentials.AbstractEssentialsHook;
+import com.leonardobishop.quests.bukkit.hook.magenta.AbstractMagentaProHook;
 import com.leonardobishop.quests.bukkit.scheduler.WrappedRunnable;
 import com.leonardobishop.quests.bukkit.scheduler.WrappedTask;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
 import com.leonardobishop.quests.bukkit.util.TaskUtils;
+import com.leonardobishop.quests.bukkit.util.constraint.TaskConstraintSet;
 import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
@@ -21,6 +24,7 @@ public final class PlaytimeTaskType extends BukkitTaskType {
         super("playtime", TaskUtils.TASK_ATTRIBUTION_STRING, "Track the amount of playing time a user has been on");
         this.plugin = plugin;
 
+        super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "ignore-afk"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "minutes"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "minutes"));
     }
@@ -28,48 +32,69 @@ public final class PlaytimeTaskType extends BukkitTaskType {
 
     @Override
     public void onReady() {
-        if (this.poll == null) {
-            this.poll = new WrappedRunnable() {
-                @Override
-                public void run() {
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
-                        if (qPlayer == null) {
-                            continue;
-                        }
-
-                        for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, PlaytimeTaskType.this)) {
-                            Quest quest = pendingTask.quest();
-                            Task task = pendingTask.task();
-                            TaskProgress taskProgress = pendingTask.taskProgress();
-
-                            PlaytimeTaskType.super.debug("Polling playtime for player", quest.getId(), task.getId(), player.getUniqueId());
-
-                            boolean ignoreAfk = TaskUtils.getConfigBoolean(task, "ignore-afk");
-
-                            if (ignoreAfk && plugin.getMagentaProHook() == null || ignoreAfk && plugin.getEssentialsHook() == null) {
-                                PlaytimeTaskType.super.debug("ignore-afk is enabled, but Essentials or MagentaPro is not detected on the server", quest.getId(), task.getId(), player.getUniqueId());
-                            }
-
-                            if (ignoreAfk && plugin.getMagentaProHook() != null && plugin.getMagentaProHook().isAfk(player.getUniqueId())
-                                    || ignoreAfk && plugin.getEssentialsHook() != null && plugin.getEssentialsHook().isAfk(player)) {
-                                PlaytimeTaskType.super.debug("ignore-afk is enabled and MagentaPro reports player as afk, continuing...", quest.getId(), task.getId(), player.getUniqueId());
-                                continue;
-                            }
-
-                            int minutes = (int) task.getConfigValue("minutes");
-                            int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress);
-                            PlaytimeTaskType.super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());
-
-                            if (progress >= minutes) {
-                                PlaytimeTaskType.super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
-                                taskProgress.setCompleted(true);
-                            }
-                            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, minutes);
-                        }
-                    }
+        if (this.poll != null) {
+            return;
+        }
+        this.poll = new WrappedRunnable() {
+            @Override
+            public void run() {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    handle(player);
                 }
-            }.runTaskTimer(plugin.getScheduler(), 1200L, 1200L);
+            }
+        }.runTaskTimer(plugin.getScheduler(), 1200L, 1200L);
+    }
+
+    private void handle(Player player) {
+        if (player.hasMetadata("NPC")) {
+            return;
+        }
+
+        QPlayer qPlayer = plugin.getPlayerManager().getPlayer(player.getUniqueId());
+        if (qPlayer == null) {
+            return;
+        }
+
+        for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this, TaskConstraintSet.ALL)) {
+            Quest quest = pendingTask.quest();
+            Task task = pendingTask.task();
+            TaskProgress taskProgress = pendingTask.taskProgress();
+
+            super.debug("Polling playtime for player", quest.getId(), task.getId(), player.getUniqueId());
+
+            boolean ignoreAfk = TaskUtils.getConfigBoolean(task, "ignore-afk", false);
+
+            if (ignoreAfk) {
+                super.debug("ignore-afk is enabled, checking hooks...", quest.getId(), task.getId(), player.getUniqueId());
+
+                AbstractMagentaProHook magentaProHook = plugin.getMagentaProHook();
+                if (magentaProHook != null && magentaProHook.isAfk(player.getUniqueId())) {
+                    super.debug("MagentaPro reports player as afk, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                    continue;
+                }
+
+                AbstractEssentialsHook essentialsHook = plugin.getEssentialsHook();
+                if (essentialsHook != null && essentialsHook.isAfk(player)) {
+                    super.debug("Essentials reports player as afk, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                    continue;
+                }
+
+                if (magentaProHook == null && essentialsHook == null) {
+                    super.debug("ignore-afk is enabled, but no hooks found, continuing...", quest.getId(), task.getId(), player.getUniqueId());
+                    continue;
+                }
+            }
+
+            int minutes = (int) task.getConfigValue("minutes");
+            int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress);
+            super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());
+
+            if (progress >= minutes) {
+                super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
+                taskProgress.setCompleted(true);
+            }
+
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, minutes);
         }
     }
 

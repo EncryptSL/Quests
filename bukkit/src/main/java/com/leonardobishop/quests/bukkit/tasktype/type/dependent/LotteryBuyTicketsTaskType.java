@@ -16,7 +16,7 @@ public class LotteryBuyTicketsTaskType extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
     public LotteryBuyTicketsTaskType(BukkitQuestsPlugin plugin) {
-        super("lottery_buy_tickets", TaskUtils.TASK_ATTRIBUTION_STRING, "Lottery buy a ticket", "lot_buy_certain");
+        super("lottery_buy_tickets", TaskUtils.TASK_ATTRIBUTION_STRING, "Lottery buy a ticket", "lot_buy");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
@@ -56,7 +56,7 @@ public class LotteryBuyTicketsTaskType extends BukkitTaskType {
                 taskProgress.setProgress(amountNeeded);
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amountNeeded);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, amountNeeded);
         }
     }
 

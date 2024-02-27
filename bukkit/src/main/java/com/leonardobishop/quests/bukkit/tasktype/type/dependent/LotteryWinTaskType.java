@@ -18,7 +18,7 @@ import java.util.UUID;
 public class LotteryWinTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
     public LotteryWinTaskType(BukkitQuestsPlugin plugin) {
-        super("lottery_win", TaskUtils.TASK_ATTRIBUTION_STRING, "Lottery buy a ticket", "lot_win_certain");
+        super("lottery_win", TaskUtils.TASK_ATTRIBUTION_STRING, "Lottery buy a ticket", "lot_win");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "money-expect"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
@@ -59,7 +59,7 @@ public class LotteryWinTaskType extends BukkitTaskType {
                 taskProgress.setProgress(amountNeeded);
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, amountNeeded);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, amountNeeded);
         }
     }
 }

@@ -38,12 +38,29 @@ public class CoreProtectHook implements AbstractCoreProtectHook {
                 }
             }
 
+            long blockLookupDelay = plugin.getConfig().getLong("options.coreprotect-block-lookup-delay", -1L);
+            if (blockLookupDelay > 0L) {
+                try {
+                    Thread.sleep(blockLookupDelay);
+                } catch (InterruptedException ignored) {
+                }
+            }
+
             List<String[]> blockLookup = api.blockLookup(block, time);
+            boolean first = true;
+
             for (String[] result : blockLookup) {
                 CoreProtectAPI.ParseResult parseResult = api.parseResult(result);
 
                 // we need to skip all the interations like door opening (action id 2)
                 if (parseResult.getActionId() == 2) {
+                    continue;
+                }
+
+                // we need to skip first break interaction too in case it's already been inserted
+                if (first && parseResult.getActionId() == 0) {
+                    first = false;
+
                     continue;
                 }
 

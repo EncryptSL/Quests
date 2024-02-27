@@ -19,7 +19,7 @@ public class RewardsClaimTaskType extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
     public RewardsClaimTaskType(BukkitQuestsPlugin plugin) {
-        super("rewards_claim", TaskUtils.TASK_ATTRIBUTION_STRING, "Claim amount of rewards", "rewards_claim_certain");
+        super("rewards_claim", TaskUtils.TASK_ATTRIBUTION_STRING, "Claim amount of rewards");
 
         this.plugin = plugin;
         this.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
@@ -61,7 +61,7 @@ public class RewardsClaimTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, rewardsNeeded);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, rewardsNeeded);
         }
 
     }

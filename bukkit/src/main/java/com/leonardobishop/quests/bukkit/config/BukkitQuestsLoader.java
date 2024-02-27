@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class BukkitQuestsLoader implements QuestsLoader {
+
     private final BukkitQuestsPlugin plugin;
     private final BukkitQuestsConfig questsConfig;
     private final QuestManager questManager;
@@ -254,6 +255,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                         List<String> startString = config.getStringList("startstring");
                         List<String> startCommands = config.getStringList("startcommands");
                         List<String> cancelCommands = config.getStringList("cancelcommands");
+                        List<String> expiryCommands = config.getStringList("expirycommands");
                         boolean repeatable = config.getBoolean("options.repeatable", false);
                         boolean cooldown = config.getBoolean("options.cooldown.enabled", false);
                         boolean timeLimit = config.getBoolean("options.time-limit.enabled", false);
@@ -285,6 +287,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                                 .withStartString(startString)
                                 .withStartCommands(startCommands)
                                 .withCancelCommands(cancelCommands)
+                                .withExpiryCommands(expiryCommands)
                                 .withPlaceholders(placeholders)
                                 .withProgressPlaceholders(progressPlaceholders)
                                 .withCooldown(cooldownTime)
@@ -307,8 +310,8 @@ public class BukkitQuestsLoader implements QuestsLoader {
                             } else {
                                 String allCategories = questManager.getCategories().stream().map(Category::getId).collect(Collectors.joining(", "));
                                 problems.add(new ConfigProblem(ConfigProblem.ConfigProblemType.WARNING,
-                                        ConfigProblemDescriptions.UNKNOWN_CATEGORY.getDescription(allCategories),
-                                        ConfigProblemDescriptions.UNKNOWN_CATEGORY.getExtendedDescription(allCategories),
+                                        ConfigProblemDescriptions.UNKNOWN_CATEGORY.getDescription(category, allCategories),
+                                        ConfigProblemDescriptions.UNKNOWN_CATEGORY.getExtendedDescription(category, allCategories),
                                         "options.category"));
                             }
                         }
@@ -353,6 +356,7 @@ public class BukkitQuestsLoader implements QuestsLoader {
                         if (config.isConfigurationSection("progress-placeholders")) {
                             for (String p : config.getConfigurationSection("progress-placeholders").getKeys(false)) {
                                 progressPlaceholders.put(p, config.getString("progress-placeholders." + p));
+                                findInvalidTaskReferences(quest, config.getString("progress-placeholders." + p), problems, "placeholders." + p, true, true);
                             }
                         }
                         questManager.registerQuest(quest);
@@ -496,24 +500,44 @@ public class BukkitQuestsLoader implements QuestsLoader {
         questsLogger.info(questItemRegistry.getAllItems().size() + " quest items have been registered.");
     }
 
-    private void findInvalidTaskReferences(Quest quest, String s, List<ConfigProblem> configProblems, String location) {
-        Pattern pattern = Pattern.compile("\\{([^}]+)}");
+    private static final Pattern taskPlaceholderPattern = Pattern.compile("\\{([^}]+):(progress|complete|id)}");
 
-        Matcher matcher = pattern.matcher(s);
+    private void findInvalidTaskReferences(Quest quest, String s, List<ConfigProblem> configProblems, String location) {
+        findInvalidTaskReferences(quest, s, configProblems, location, false, false);
+    }
+
+    private void findInvalidTaskReferences(Quest quest, String s, List<ConfigProblem> configProblems, String location, boolean allowByThis, boolean allowByType) {
+        Matcher matcher = taskPlaceholderPattern.matcher(s);
+
         while (matcher.find()) {
-            String[] parts = matcher.group(1).split(":");
+            String taskIdPart = matcher.group(1);
+            if (allowByThis && taskIdPart.equals("this")) {
+                continue;
+            }
+
             boolean match = false;
-            for (Task t : quest.getTasks()) {
-                if (t.getId().equals(parts[0])) {
+            for (Task task : quest.getTasks()) {
+                String taskType = task.getType();
+                if (allowByType && taskType.equals(taskIdPart)) {
+                    match = true;
+                    break;
+                }
+
+                String taskId = task.getId();
+                if (taskId.equals(taskIdPart)) {
                     match = true;
                     break;
                 }
             }
-            if (!match)
-                configProblems.add(new ConfigProblem(ConfigProblem.ConfigProblemType.WARNING,
-                        ConfigProblemDescriptions.UNKNOWN_TASK_REFERENCE.getDescription(parts[0]),
-                        ConfigProblemDescriptions.UNKNOWN_TASK_REFERENCE.getExtendedDescription(parts[0]),
-                        location));
+
+            if (match) {
+                continue;
+            }
+
+            configProblems.add(new ConfigProblem(ConfigProblem.ConfigProblemType.WARNING,
+                    ConfigProblemDescriptions.UNKNOWN_TASK_REFERENCE.getDescription(taskIdPart),
+                    ConfigProblemDescriptions.UNKNOWN_TASK_REFERENCE.getExtendedDescription(taskIdPart),
+                    location));
         }
     }
 
@@ -533,4 +557,5 @@ public class BukkitQuestsLoader implements QuestsLoader {
 
         return new QItemStack(plugin, name, loreNormal, loreStarted, is);
     }
+
 }

@@ -349,6 +349,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(new MiningTaskType(this));
             taskTypeManager.registerTaskType(new MobkillingTaskType(this));
             taskTypeManager.registerTaskType(new PermissionTaskType(this));
+            taskTypeManager.registerTaskType(new PlayerDropItemTaskType(this));
             taskTypeManager.registerTaskType(new PlayerkillingTaskType(this));
             taskTypeManager.registerTaskType(new PlaytimeTaskType(this));
             taskTypeManager.registerTaskType(new PositionTaskType(this));
@@ -359,12 +360,13 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(new WalkingTaskType(this));
 
             // Register task types with class/method compatibility requirement
-            taskTypeManager.registerTaskType(() -> new BrewingTaskType(this), () -> CompatUtils.classWithMethodExists("org.bukkit.event.inventory.BrewEvent", "getResults"));
-            taskTypeManager.registerTaskType(() -> new SmithingTaskType(this), () -> CompatUtils.classExists("org.bukkit.event.inventory.SmithItemEvent"));
-            taskTypeManager.registerTaskType(() -> new FarmingTaskType(this), () -> CompatUtils.classExists("org.bukkit.block.data.Ageable"));
-            taskTypeManager.registerTaskType(() -> new BlockshearingTaskType(this), () -> CompatUtils.classExists("io.papermc.paper.event.block.PlayerShearBlockEvent"));
-            taskTypeManager.registerTaskType(() -> new ReplenishingTaskType(this), () -> CompatUtils.classExists("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent"));
             taskTypeManager.registerTaskType(() -> new BlockItemdroppingTaskType(this), () -> CompatUtils.classExists("org.bukkit.event.block.BlockDropItemEvent"));
+            taskTypeManager.registerTaskType(() -> new BrewingTaskType(this), () -> CompatUtils.classWithMethodExists("org.bukkit.event.inventory.BrewEvent", "getResults"));
+            taskTypeManager.registerTaskType(() -> new BlockshearingTaskType(this), () -> CompatUtils.classExists("io.papermc.paper.event.block.PlayerShearBlockEvent"));
+            taskTypeManager.registerTaskType(() -> new CompostingTaskType(this), () -> CompatUtils.classExists("io.papermc.paper.event.entity.EntityCompostItemEvent"));
+            taskTypeManager.registerTaskType(() -> new FarmingTaskType(this), () -> CompatUtils.classExists("org.bukkit.block.data.Ageable"));
+            taskTypeManager.registerTaskType(() -> new ReplenishingTaskType(this), () -> CompatUtils.classExists("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent"));
+            taskTypeManager.registerTaskType(() -> new SmithingTaskType(this), () -> CompatUtils.classExists("org.bukkit.event.inventory.SmithItemEvent"));
 
             // Register task types with enabled plugin compatibility requirement
             taskTypeManager.registerTaskType(() -> new ASkyBlockLevelTaskType(this), () -> CompatUtils.isPluginEnabled("ASkyBlock"));
@@ -641,10 +643,10 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
         }
 
         try {
-            Player.Spigot.class.getMethod("sendMessage", ChatMessageType.class, BaseComponent.class);
+            Class.forName("org.bukkit.entity.Player.Spigot").getMethod("sendMessage", ChatMessageType.class, BaseComponent.class);
             actionBarHandle = new ActionBar_Spigot();
             return;
-        } catch (NoSuchMethodException ignored) {
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) {
         }
 
         actionBarHandle = new ActionBar_Nothing();

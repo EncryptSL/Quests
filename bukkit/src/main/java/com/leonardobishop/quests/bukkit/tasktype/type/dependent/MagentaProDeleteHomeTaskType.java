@@ -18,7 +18,7 @@ import java.util.UUID;
 public class MagentaProDeleteHomeTaskType extends BukkitTaskType {
     private final BukkitQuestsPlugin plugin;
     public MagentaProDeleteHomeTaskType(BukkitQuestsPlugin plugin) {
-        super("magentapro_deletehome", TaskUtils.TASK_ATTRIBUTION_STRING, "Delete home in plugin MagentaPro", "mg_delhome_certain");
+        super("magenta_delete_home", TaskUtils.TASK_ATTRIBUTION_STRING, "Delete home in plugin MagentaPro", "mg_delhome");
         this.plugin = plugin;
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
@@ -51,7 +51,7 @@ public class MagentaProDeleteHomeTaskType extends BukkitTaskType {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
             }
-            TaskUtils.sendTrackAdvancement(player, quest, task, taskProgress, needed);
+            TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, needed);
         }
     }
 }
