@@ -28,6 +28,7 @@ public final class BuildingTaskType extends BukkitTaskType {
         super.addConfigValidator(TaskUtils.useMaterialListConfigValidator(this, TaskUtils.MaterialListConfigValidatorMode.BLOCK, "block", "blocks"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "data"));
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "reverse-if-broken"));
+        super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "allow-negative-progress"));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

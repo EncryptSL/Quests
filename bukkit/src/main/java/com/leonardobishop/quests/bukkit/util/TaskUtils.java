@@ -76,7 +76,7 @@ public class TaskUtils {
         Object configObject = task.getConfigValue(key);
         if (configObject instanceof List list) {
             return List.copyOf(list);
-        } else if (configObject instanceof String s) {
+        } else if (configObject instanceof String s){
             return List.of(s);
         } else {
             return null;
@@ -275,8 +275,7 @@ public class TaskUtils {
         return tasks;
     }
 
-    public record PendingTask(Quest quest, Task task, QuestProgress questProgress, TaskProgress taskProgress) {
-    }
+    public record PendingTask(Quest quest, Task task, QuestProgress questProgress, TaskProgress taskProgress) { }
 
     public static boolean matchBlock(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @Nullable Block block, @NotNull UUID player) {
         return matchBlock(type, pendingTask, block, player, "block", "blocks");
@@ -303,7 +302,8 @@ public class TaskUtils {
         Object configData = task.getConfigValue("data");
 
         Material blockMaterial = state.getType();
-        byte blockData = state.getRawData();
+        // do not set block data here as it will initialize Legacy Material Support
+        Byte blockData = null;
 
         Material material;
         int comparableData;
@@ -322,11 +322,25 @@ public class TaskUtils {
 
             type.debug("Checking against block " + material + ":" + comparableData, pendingTask.quest.getId(), task.getId(), player);
 
-            if (material == blockMaterial && ((parts.length == 1 && configData == null) || blockData == comparableData)) {
-                type.debug("Block match", pendingTask.quest.getId(), task.getId(), player);
-                return true;
+            if (material == blockMaterial) {
+                if (parts.length == 1 && configData == null) {
+                    type.debug("Block match (modern)", pendingTask.quest.getId(), task.getId(), player);
+                    return true;
+                }
+
+                // delay legacy material support initialization
+                if (blockData == null) {
+                    blockData = state.getRawData();
+                }
+
+                if (blockData == comparableData) {
+                    type.debug("Block match (legacy)", pendingTask.quest.getId(), task.getId(), player);
+                    return true;
+                }
+
+                type.debug("Block mismatch (legacy)", pendingTask.quest.getId(), task.getId(), player);
             } else {
-                type.debug("Block mismatch", pendingTask.quest.getId(), task.getId(), player);
+                type.debug("Block mismatch (modern)", pendingTask.quest.getId(), task.getId(), player);
             }
         }
 
@@ -376,6 +390,14 @@ public class TaskUtils {
     }
 
     public static boolean matchEntity(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @NotNull Entity entity, @NotNull UUID player, @NotNull String stringKey, @NotNull String listKey) {
+        return matchEntity(type, pendingTask, entity.getType(), player, stringKey, listKey);
+    }
+
+    public static boolean matchEntity(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @NotNull EntityType entityType, @NotNull UUID player) {
+        return matchEntity(type, pendingTask, entityType, player, "mob", "mobs");
+    }
+
+    public static boolean matchEntity(@NotNull BukkitTaskType type, @NotNull PendingTask pendingTask, @NotNull EntityType entityType, @NotNull UUID player, @NotNull String stringKey, @NotNull String listKey) {
         Task task = pendingTask.task;
 
         List<String> checkMobs = TaskUtils.getConfigStringList(task, task.getConfigValues().containsKey(stringKey) ? stringKey : listKey);
@@ -384,8 +406,6 @@ public class TaskUtils {
         } else if (checkMobs.isEmpty()) {
             return false;
         }
-
-        EntityType entityType = entity.getType();
 
         EntityType mob;
 
@@ -952,7 +972,7 @@ public class TaskUtils {
      * paths is a value in the list of accepted values.
      *
      * @param acceptedValues a list of accepted values
-     * @param paths          a list of valid paths for task
+     * @param paths a list of valid paths for task
      * @return config validator
      */
     public static TaskType.ConfigValidator useAcceptedValuesConfigValidator(TaskType type, List<String> acceptedValues, String... paths) {
