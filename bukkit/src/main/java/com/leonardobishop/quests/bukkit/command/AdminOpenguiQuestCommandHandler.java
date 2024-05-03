@@ -3,9 +3,9 @@ package com.leonardobishop.quests.bukkit.command;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.MenuUtils;
 import com.leonardobishop.quests.bukkit.util.Messages;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import com.leonardobishop.quests.common.player.QPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +37,7 @@ public class AdminOpenguiQuestCommandHandler implements CommandHandler {
             Messages.COMMAND_QUEST_ADMIN_PLAYERNOTFOUND.send(sender, "{player}", args[3]);
         }
 
-        sender.sendMessage(ChatColor.RED + "/mise a/admin opengui q/quest <player>");
+        sender.sendMessage(StringUtils.colorized("&c/mise a/admin opengui q/quest <player>"));
     }
 
     @Override

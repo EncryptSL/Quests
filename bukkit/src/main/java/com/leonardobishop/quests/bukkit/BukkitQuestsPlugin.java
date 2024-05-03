@@ -217,7 +217,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             storageProvider.init();
         } catch (Exception e) {
             questsLogger.severe("An error occurred initialising the storage provider.");
-            e.printStackTrace();
+            e.fillInStackTrace();
         }
 
         // Setup version specific compatibility layers
@@ -343,6 +343,8 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(new HatchingTaskType(this));
             taskTypeManager.registerTaskType(new InteractTaskType(this));
             taskTypeManager.registerTaskType(new InventoryTaskType(this));
+            taskTypeManager.registerTaskType(new ItembreakingTaskType(this));
+            taskTypeManager.registerTaskType(new ItemdamagingTaskType(this));
             taskTypeManager.registerTaskType(new MilkingTaskType(this));
             taskTypeManager.registerTaskType(new MiningTaskType(this));
             taskTypeManager.registerTaskType(new MobkillingTaskType(this));
@@ -362,8 +364,12 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             taskTypeManager.registerTaskType(() -> new BrewingTaskType(this), () -> CompatUtils.classWithMethodExists("org.bukkit.event.inventory.BrewEvent", "getResults"));
             taskTypeManager.registerTaskType(() -> new BlockshearingTaskType(this), () -> CompatUtils.classExists("io.papermc.paper.event.block.PlayerShearBlockEvent"));
             taskTypeManager.registerTaskType(() -> new CompostingTaskType(this), () -> CompatUtils.classExists("io.papermc.paper.event.entity.EntityCompostItemEvent"));
+            taskTypeManager.registerTaskType(() -> new CuringTaskType(this), () -> CompatUtils.classExists("org.bukkit.event.entity.EntityTransformEvent"));
+            taskTypeManager.registerTaskType(() -> new BucketEntityTaskType(this), () -> CompatUtils.classExists("org.bukkit.event.player.PlayerBucketEntityEvent"));
             taskTypeManager.registerTaskType(() -> new FarmingTaskType(this), () -> CompatUtils.classExists("org.bukkit.block.data.Ageable"));
+            taskTypeManager.registerTaskType(() -> new ItemmendingTaskType(this), () -> CompatUtils.classExists("org.bukkit.event.player.PlayerItemMendEvent"));
             taskTypeManager.registerTaskType(() -> new ReplenishingTaskType(this), () -> CompatUtils.classExists("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent"));
+            taskTypeManager.registerTaskType(() -> new ResurrectingTaskType(this), () -> CompatUtils.classExists("org.bukkit.event.entity.EntityResurrectEvent"));
             taskTypeManager.registerTaskType(() -> new SmithingTaskType(this), () -> CompatUtils.classExists("org.bukkit.event.inventory.SmithItemEvent"));
 
             // Register task types with enabled plugin compatibility requirement
@@ -674,8 +680,7 @@ public class BukkitQuestsPlugin extends JavaPlugin implements Quests {
             return;
         }
 
-        if (CompatUtils.classWithMethodExists("org.bukkit.craftbukkit.{}.inventory.CraftMetaSkull", "setProfile", GameProfile.class)) {
-            // Spigot 1.18.1+
+        if (CompatUtils.classWithMethodExists("{}.inventory.CraftMetaSkull", "setProfile", GameProfile.class)) {            // Spigot 1.18.1+
             if (CompatUtils.classExists("org.bukkit.profile.PlayerProfile")) {
                 skullGetter = new ModernSkullGetter(this);
                 return;

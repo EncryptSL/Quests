@@ -5,8 +5,7 @@ import com.leonardobishop.quests.common.plugin.Quests;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -23,7 +22,7 @@ public class Updater {
     private final Quests plugin;
 
     private String returnedVersion;
-    private URL api;
+    private URI api;
     private boolean updateReady;
     private long lastCheck;
 
@@ -33,8 +32,8 @@ public class Updater {
         this.tokenizedInstalledVersion = tokenize(installedVersion);
         this.enabled = enabled;
         try {
-            this.api = new URL(getApiUrl());
-        } catch (MalformedURLException ignored) { }
+            this.api = URI.create(getApiUrl());
+        } catch (NullPointerException ignored) { }
     }
 
     public String getUpdateLink() {
@@ -64,7 +63,7 @@ public class Updater {
         }
         try {
             lastCheck = System.currentTimeMillis();
-            URLConnection con = api.openConnection();
+            URLConnection con = api.toURL().openConnection();
             returnedVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
 
             int[] tokenizedReturnedVersion = tokenize(returnedVersion);

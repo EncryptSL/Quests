@@ -1,7 +1,7 @@
 package com.leonardobishop.quests.bukkit.command;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
-import org.bukkit.ChatColor;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +18,7 @@ public class AdminWikiCommandHandler implements CommandHandler {
 
     @Override
     public void handle(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.RED + "Odkaz k wiki: " + ChatColor.GRAY + "https://quests.leonardobishop.com/");
+        sender.sendMessage(StringUtils.colorized("&eOdkaz na wiki: &7 https://quests.leonardobishop.com/"));
     }
 
     @Override

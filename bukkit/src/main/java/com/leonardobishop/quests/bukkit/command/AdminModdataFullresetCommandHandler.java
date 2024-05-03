@@ -3,8 +3,8 @@ package com.leonardobishop.quests.bukkit.command;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.CommandUtils;
 import com.leonardobishop.quests.bukkit.util.Messages;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import com.leonardobishop.quests.common.player.questprogressfile.QuestProgressFile;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +33,7 @@ public class AdminModdataFullresetCommandHandler implements CommandHandler {
             return;
         }
 
-        sender.sendMessage(ChatColor.RED + "/mise a/admin moddata fullreset <player>");
+        sender.sendMessage(StringUtils.colorized("&c/mise a/admin moddata fullreset <player>"));
     }
 
     @Override

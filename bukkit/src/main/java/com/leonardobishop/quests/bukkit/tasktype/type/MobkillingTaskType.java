@@ -17,7 +17,6 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,6 +37,7 @@ public final class MobkillingTaskType extends BukkitTaskType {
         super.addConfigValidator(TaskUtils.useItemStackConfigValidator(this, "item"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "data"));
         super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "exact-match"));
+        super.addConfigValidator(TaskUtils.useEnumConfigValidator(this, TaskUtils.StringMatchMode.class, "name-match-mode"));
     }
 
     @Override
@@ -71,8 +71,6 @@ public final class MobkillingTaskType extends BukkitTaskType {
             return;
         }
 
-        CreatureSpawnEvent.SpawnReason spawnReason = entity.getEntitySpawnReason();
-
         //noinspection deprecation
         String customName = entity.getCustomName();
 
@@ -105,7 +103,7 @@ public final class MobkillingTaskType extends BukkitTaskType {
                 continue;
             }
 
-            if (!TaskUtils.matchString(this, pendingTask, customName, player.getUniqueId(), "name", "names", true, false)) {
+            if (!TaskUtils.matchString(this, pendingTask, customName, player.getUniqueId(), "name", "names", true, "name-match-mode",false)) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }

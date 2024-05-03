@@ -2,6 +2,7 @@ package com.leonardobishop.quests.bukkit.command;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.Messages;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import com.leonardobishop.quests.common.tasktype.TaskType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -22,12 +23,12 @@ public class AdminTypesCommandHandler implements CommandHandler {
     @Override
     public void handle(CommandSender sender, String[] args) {
         if (args.length == 2) {
-            sender.sendMessage(ChatColor.GRAY + "Registrované typy misí:");
+            sender.sendMessage(StringUtils.colorized("&7Registrované typy misí:"));
             for (TaskType taskType : plugin.getTaskTypeManager().getTaskTypes()) {
                 sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.RED + taskType.getType());
             }
             sender.sendMessage(ChatColor.GRAY.toString() + plugin.getTaskTypeManager().getTaskTypes().size() + " registrovaných.");
-            sender.sendMessage(ChatColor.DARK_GRAY + "Zobrazit informace pomocí /mise a types [type].");
+            sender.sendMessage(StringUtils.colorized("&8Zobrazit informace pomocí /mise a types [type]."));
         } else {
             TaskType taskType = null;
             for (TaskType task : plugin.getTaskTypeManager().getTaskTypes()) {
@@ -38,9 +39,9 @@ public class AdminTypesCommandHandler implements CommandHandler {
             if (taskType == null) {
                 Messages.COMMAND_TASKVIEW_ADMIN_FAIL.send(sender, "{task}", args[2]);
             } else {
-                sender.sendMessage(ChatColor.RED + "Typ mise: " + ChatColor.GRAY + taskType.getType());
-                sender.sendMessage(ChatColor.RED + "Author: " + ChatColor.GRAY + taskType.getAuthor());
-                sender.sendMessage(ChatColor.RED + "Popis: " + ChatColor.GRAY + taskType.getDescription());
+                sender.sendMessage(StringUtils.colorized("&cTyp mise: &7" + taskType.getType()));
+                sender.sendMessage(StringUtils.colorized("&cAuthor: &7" + taskType.getAuthor()));
+                sender.sendMessage(StringUtils.colorized("&cPopis: &7" + taskType.getDescription()));
             }
         }
     }

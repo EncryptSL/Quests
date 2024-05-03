@@ -5,7 +5,7 @@ import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.config.BukkitQuestsConfig;
 import com.leonardobishop.quests.bukkit.menu.element.*;
 import com.leonardobishop.quests.bukkit.util.MenuUtils;
-import com.leonardobishop.quests.bukkit.util.StringUtils;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import com.leonardobishop.quests.common.player.QPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

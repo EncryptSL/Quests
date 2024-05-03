@@ -15,6 +15,6 @@ public class MagentaProHook implements AbstractMagentaProHook {
 
     @Override
     public boolean isAfk(UUID uuid) {
-        return magenta.getAfk().isAfk(uuid);
+        return magenta.getUser().getUser(uuid).isAfk();
     }
 }

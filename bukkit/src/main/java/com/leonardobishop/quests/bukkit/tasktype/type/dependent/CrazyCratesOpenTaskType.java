@@ -26,6 +26,7 @@ public class CrazyCratesOpenTaskType extends BukkitTaskType {
 
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "crate", "crates"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
+        super.addConfigValidator(TaskUtils.useEnumConfigValidator(this, TaskUtils.StringMatchMode.class, "name-match-mode"));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -51,7 +52,7 @@ public class CrazyCratesOpenTaskType extends BukkitTaskType {
 
             int cratesNeeded = (int) task.getConfigValue("amount");
 
-            if (!TaskUtils.matchString(this, pendingTask, crate.getName().replace("&", "").replace(" ", "_"), player.getUniqueId(), "crate","crates", false, true)) {
+            if (!TaskUtils.matchString(this, pendingTask, crate.getName().replace("&", "").replace(" ", "_"), player.getUniqueId(), "crate","crates", false, "name-match-mode",true)) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }

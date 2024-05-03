@@ -1,9 +1,6 @@
 package com.leonardobishop.quests.bukkit.tasktype.type;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
-import com.leonardobishop.quests.bukkit.item.QuestItem;
 import com.leonardobishop.quests.bukkit.tasktype.BukkitTaskType;
 import com.leonardobishop.quests.bukkit.util.TaskUtils;
 import com.leonardobishop.quests.bukkit.util.constraint.TaskConstraintSet;
@@ -11,31 +8,44 @@ import com.leonardobishop.quests.common.player.QPlayer;
 import com.leonardobishop.quests.common.player.questprogressfile.TaskProgress;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.ZombieVillager;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityTransformEvent;
 
-public abstract class BucketInteractionTaskType extends BukkitTaskType {
+public final class CuringTaskType extends BukkitTaskType {
 
     private final BukkitQuestsPlugin plugin;
-    private final Table<String, String, QuestItem> fixedQuestItemCache = HashBasedTable.create();
 
-    public BucketInteractionTaskType(BukkitQuestsPlugin plugin, String type, String author, String description) {
-        super(type, author, description);
+    public CuringTaskType(BukkitQuestsPlugin plugin) {
+        super("curing", TaskUtils.TASK_ATTRIBUTION_STRING, "Cure a set amount of zombie villagers.");
         this.plugin = plugin;
 
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
-        super.addConfigValidator(TaskUtils.useItemStackConfigValidator(this, "bucket"));
-        super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "data"));
-        super.addConfigValidator(TaskUtils.useBooleanConfigValidator(this, "exact-match"));
     }
 
-    @Override
-    public void onReady() {
-        fixedQuestItemCache.clear();
-    }
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onEntityTransform(EntityTransformEvent event) {
+        EntityTransformEvent.TransformReason reason = event.getTransformReason();
+        if (reason != EntityTransformEvent.TransformReason.CURED) {
+            return;
+        }
 
-    protected void handle(Player player, ItemStack item) {
+        Entity entity = event.getEntity();
+        if (!(entity instanceof ZombieVillager zombieVillager)) {
+            return;
+        }
+
+        OfflinePlayer offlinePlayer = zombieVillager.getConversionPlayer();
+        if (!(offlinePlayer instanceof Player player)) {
+            return;
+        }
+
         if (player.hasMetadata("NPC")) {
             return;
         }
@@ -45,32 +55,30 @@ public abstract class BucketInteractionTaskType extends BukkitTaskType {
             return;
         }
 
+        Villager.Type type = zombieVillager.getVillagerType();
+        Villager.Profession profession = zombieVillager.getVillagerProfession();
+
         for (TaskUtils.PendingTask pendingTask : TaskUtils.getApplicableTasks(player, qPlayer, this, TaskConstraintSet.ALL)) {
             Quest quest = pendingTask.quest();
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
 
-            if (task.hasConfigKey("bucket")) {
-                QuestItem qi;
-                if ((qi = fixedQuestItemCache.get(quest.getId(), task.getId())) == null) {
-                    QuestItem fetchedItem = TaskUtils.getConfigQuestItem(task, "bucket", "data");
-                    fixedQuestItemCache.put(quest.getId(), task.getId(), fetchedItem);
-                    qi = fetchedItem;
-                }
+            // I don't know why my IDE thinks profession
+            // is always null, probably a bad API design.
+            //
+            // Yeah, ZombieVillager is missing an override
+            // for annotation from the Zombie interface.
+            //
+            //noinspection ConstantValue
+            super.debug("Player cured " + zombieVillager.getType() + " of profession " + profession + " and type " + type, quest.getId(), task.getId(), player.getUniqueId());
 
-                super.debug("Player interacted with bucket of type " + item.getType(), quest.getId(), task.getId(), player.getUniqueId());
-
-                boolean exactMatch = TaskUtils.getConfigBoolean(task, "exact-match", true);
-                if (!qi.compareItemStack(item, exactMatch)) {
-                    super.debug("Item does not match, continuing...", quest.getId(), task.getId(), player.getUniqueId());
-                    continue;
-                }
-            }
+            // TODO: add villager-type and villager-profession options
 
             int progress = TaskUtils.incrementIntegerTaskProgress(taskProgress);
             super.debug("Incrementing task progress (now " + progress + ")", quest.getId(), task.getId(), player.getUniqueId());
 
             int amount = (int) task.getConfigValue("amount");
+
             if (progress >= amount) {
                 super.debug("Marking task as complete", quest.getId(), task.getId(), player.getUniqueId());
                 taskProgress.setCompleted(true);
@@ -79,5 +87,4 @@ public abstract class BucketInteractionTaskType extends BukkitTaskType {
             TaskUtils.sendTrackAdvancement(player, quest, task, pendingTask, amount);
         }
     }
-
 }

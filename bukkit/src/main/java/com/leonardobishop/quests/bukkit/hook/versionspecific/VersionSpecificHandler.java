@@ -15,9 +15,21 @@ public interface VersionSpecificHandler {
 
     boolean isPlayerGliding(Player player);
 
-    boolean isPlayerOnStrider(Player player);
+    boolean isPlayerOnCamel(Player player);
+
+    boolean isPlayerOnDonkey(Player player);
 
     boolean isPlayerOnHorse(Player player);
+
+    boolean isPlayerOnLlama(Player player);
+
+    boolean isPlayerOnMule(Player player);
+
+    boolean isPlayerOnSkeletonHorse(Player player);
+
+    boolean isPlayerOnStrider(Player player);
+
+    boolean isPlayerOnZombieHorse(Player player);
 
     boolean isOffHandSwap(ClickType clickType);
 
@@ -36,5 +48,6 @@ public interface VersionSpecificHandler {
     ItemStack[] getSmithItems(SmithItemEvent event);
 
     String getSmithMode(SmithItemEvent event);
+
     boolean isGoat(Entity entity);
 }

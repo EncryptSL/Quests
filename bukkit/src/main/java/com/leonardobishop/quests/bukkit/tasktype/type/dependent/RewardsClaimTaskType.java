@@ -24,6 +24,7 @@ public class RewardsClaimTaskType extends BukkitTaskType {
         this.plugin = plugin;
         this.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         this.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
+        super.addConfigValidator(TaskUtils.useEnumConfigValidator(this, TaskUtils.StringMatchMode.class, "name-match-mode"));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -48,7 +49,7 @@ public class RewardsClaimTaskType extends BukkitTaskType {
 
             super.debug("Player claimed reward", quest.getId(), task.getId(), player.getUniqueId());
 
-            if (!TaskUtils.matchString(this, pendingTask, reward, player.getUniqueId(), "reward", "rewards", false, false)) {
+            if (!TaskUtils.matchString(this, pendingTask, reward, player.getUniqueId(), "reward", "rewards", false, "name-match-mode",false)) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }

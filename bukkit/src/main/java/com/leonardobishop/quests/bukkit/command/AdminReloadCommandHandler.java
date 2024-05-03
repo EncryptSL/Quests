@@ -2,7 +2,7 @@ package com.leonardobishop.quests.bukkit.command;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.CommandUtils;
-import org.bukkit.ChatColor;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,11 +19,11 @@ public class AdminReloadCommandHandler implements CommandHandler {
 
     @Override
     public void handle(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.GRAY + "Některé změny, například uložitě mohou vyžadovat úplný restart.");
+        sender.sendMessage(StringUtils.colorized("&7Některé změny, například uložitě mohou vyžadovat úplný restart."));
         plugin.reloadConfig();
         plugin.reloadQuests();
         if (!plugin.getConfigProblems().isEmpty()) CommandUtils.showProblems(sender, plugin.getConfigProblems());
-        sender.sendMessage(ChatColor.GREEN + "Konfigurace se znovu načetla.");
+        sender.sendMessage(StringUtils.colorized("&aKonfigurace se znovu načetla."));
     }
 
     @Override

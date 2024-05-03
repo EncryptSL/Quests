@@ -25,6 +25,7 @@ public class PlayerDropItemTaskType extends BukkitTaskType {
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useMaterialListConfigValidator(this, TaskUtils.MaterialListConfigValidatorMode.ITEM, "item", "items"));
+        super.addConfigValidator(TaskUtils.useEnumConfigValidator(this, TaskUtils.StringMatchMode.class, "item-match-mode"));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -47,7 +48,7 @@ public class PlayerDropItemTaskType extends BukkitTaskType {
 
             super.debug("Player dropped item from inventory", quest.getId(), task.getId(), player.getUniqueId());
 
-            if (!TaskUtils.matchString(this, pendingTask, item.getName(), player.getUniqueId(), "item", "items", false, true)) {
+            if (!TaskUtils.matchString(this, pendingTask, item.getName(), player.getUniqueId(), "item", "items", false, "item-match-mode",true)) {
                 super.debug("Continuing...", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }

@@ -1,7 +1,7 @@
 package com.leonardobishop.quests.bukkit.command;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
-import org.bukkit.ChatColor;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,13 +18,11 @@ public class AdminAboutCommandHandler implements CommandHandler {
 
     @Override
     public void handle(CommandSender sender, String[] args) {
-        sender.sendMessage(ChatColor.RED + "Quests " + ChatColor.BOLD + "v" + plugin.getDescription().getVersion());
-        sender.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.RED + "Source code: " + ChatColor.GRAY + "https://github.com/LMBishop/Quests/");
-        sender.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.RED + "Report an issue: " + ChatColor.GRAY + "https://github.com/LMBishop/Quests/issues");
-        sender.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.RED + "Documentation: " + ChatColor.GRAY + "https://quests.leonardobishop.com/");
-        sender.sendMessage(ChatColor.DARK_GRAY + " - " + ChatColor.RED + "Licensed under the GPLv3");
-        sender.sendMessage(ChatColor.GRAY + "Many contributors have written source code and task types for Quests," +
-                " please see the GitHub link for an up-to-date list of contributors.");
+        sender.sendMessage(StringUtils.colorized("&cQuests fork created from https://github.com/LMBishop/Quests/"));
+        sender.sendMessage(StringUtils.colorized("&8- &cZdrojový kód originálu: &ehttps://github.com/LMBishop/Quests/"));
+        sender.sendMessage(StringUtils.colorized("&8- &cZdrojový kód forku: &ehttps://github.com/EncryptSL/Quests"));
+        sender.sendMessage(" ");
+        sender.sendMessage(StringUtils.colorized("&8- cLicencováno pod GPLv3"));
     }
 
     @Override

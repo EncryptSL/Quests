@@ -3,9 +3,9 @@ package com.leonardobishop.quests.bukkit.command;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.CommandUtils;
 import com.leonardobishop.quests.bukkit.util.Messages;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import com.leonardobishop.quests.common.player.questprogressfile.QuestProgressFile;
 import com.leonardobishop.quests.common.quest.Quest;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +39,7 @@ public class AdminModdataCompleteCommandHandler implements CommandHandler {
             return;
         }
 
-        sender.sendMessage(ChatColor.RED + "/mise a/admin moddata complete <player> <quest>");
+        sender.sendMessage(StringUtils.colorized("/mise a/admin moddata complete <player> <quest>"));
     }
 
 

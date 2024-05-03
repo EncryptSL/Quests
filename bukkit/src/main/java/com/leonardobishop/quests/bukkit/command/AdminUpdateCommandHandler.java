@@ -2,6 +2,7 @@ package com.leonardobishop.quests.bukkit.command;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.Messages;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +29,7 @@ public class AdminUpdateCommandHandler implements CommandHandler {
                         "{oldver}", plugin.getUpdater().getInstalledVersion(),
                         "{link}", plugin.getUpdater().getUpdateLink());
             } else {
-                sender.sendMessage(ChatColor.GRAY + "žádné aktualizace.");
+                sender.sendMessage(StringUtils.colorized("&7žádné aktualizace."));
             }
         });
     }

@@ -3,11 +3,11 @@ package com.leonardobishop.quests.bukkit.command;
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.CommandUtils;
 import com.leonardobishop.quests.bukkit.util.Messages;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import com.leonardobishop.quests.common.enums.QuestStartResult;
 import com.leonardobishop.quests.common.player.questprogressfile.QuestProgressFile;
 import com.leonardobishop.quests.common.quest.Category;
 import com.leonardobishop.quests.common.quest.Quest;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +82,7 @@ public class AdminModdataRandomCommandHandler implements CommandHandler {
             });
         }
 
-        sender.sendMessage(ChatColor.RED + "/mise a/admin moddata random <player> [category]");
+        sender.sendMessage(StringUtils.colorized("&c/mise a/admin moddata random <player> [category]"));
     }
 
     @Override

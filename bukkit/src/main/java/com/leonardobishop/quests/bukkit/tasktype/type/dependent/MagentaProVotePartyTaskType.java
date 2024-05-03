@@ -40,7 +40,7 @@ public class MagentaProVotePartyTaskType extends BukkitTaskType {
             Task task = pendingTask.task();
             TaskProgress taskProgress = pendingTask.taskProgress();
 
-            super.debug("Voteparty player is rewarded", quest.getId(), task.getId(), player.getUniqueId());
+            super.debug("VoteParty player is rewarded", quest.getId(), task.getId(), player.getUniqueId());
 
             if (TaskUtils.getConfigBoolean(task, "players-expect")) {
                 int playersNeeded = (int) task.getConfigValue("online-players");

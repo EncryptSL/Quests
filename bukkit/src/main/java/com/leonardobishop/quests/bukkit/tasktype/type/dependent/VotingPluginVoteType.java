@@ -23,6 +23,7 @@ public final class VotingPluginVoteType extends BukkitTaskType {
 
         super.addConfigValidator(TaskUtils.useRequiredConfigValidator(this, "amount"));
         super.addConfigValidator(TaskUtils.useIntegerConfigValidator(this, "amount"));
+        super.addConfigValidator(TaskUtils.useEnumConfigValidator(this, TaskUtils.StringMatchMode.class, "service-match-mode"));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -47,7 +48,7 @@ public final class VotingPluginVoteType extends BukkitTaskType {
 
             super.debug("Player voted", quest.getId(), task.getId(), player.getUniqueId());
 
-            if (!TaskUtils.matchString(this, pendingTask, serviceSite, player.getUniqueId(), "service", "services", false, true)) {
+            if (!TaskUtils.matchString(this, pendingTask, serviceSite, player.getUniqueId(), "service", "services", false, "service-match-mode",true)) {
                 super.debug("Not found service site continue", quest.getId(), task.getId(), player.getUniqueId());
                 continue;
             }

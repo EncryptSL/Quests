@@ -2,6 +2,7 @@ package com.leonardobishop.quests.bukkit.command;
 
 import com.leonardobishop.quests.bukkit.BukkitQuestsPlugin;
 import com.leonardobishop.quests.bukkit.util.Messages;
+import com.leonardobishop.quests.bukkit.util.lang3.StringUtils;
 import com.leonardobishop.quests.common.quest.Quest;
 import com.leonardobishop.quests.common.quest.Task;
 import org.bukkit.ChatColor;
@@ -61,13 +62,13 @@ public class AdminInfoCommandHandler implements CommandHandler {
                 for (String s : quest.getRewards()) {
                     sender.sendMessage(ChatColor.DARK_GRAY + " * " + ChatColor.GRAY + s);
                 }
-                sender.sendMessage(ChatColor.RED.toString() + ChatColor.UNDERLINE +  "Quest options");
-                sender.sendMessage(ChatColor.RED + "Kategorie: " + ChatColor.GRAY + quest.getCategoryId());
-                sender.sendMessage(ChatColor.RED + "Opakovatelný: " + ChatColor.GRAY + quest.isRepeatable());
-                sender.sendMessage(ChatColor.RED + "Požadavky: " + ChatColor.GRAY + String.join(", ", quest.getRequirements()));
-                sender.sendMessage(ChatColor.RED + "Cooldown enabled: " + ChatColor.GRAY + quest.isCooldownEnabled());
-                sender.sendMessage(ChatColor.RED + "Cooldown time: " + ChatColor.GRAY + quest.getCooldown());
-                sender.sendMessage(ChatColor.RED + "Atomatický start: " + ChatColor.GRAY + quest.isAutoStartEnabled());
+                sender.sendMessage(StringUtils.colorized("&c&uNastavení Mise"));
+                sender.sendMessage(StringUtils.colorized("&cKategorie: &7" + quest.getCategoryId()));
+                sender.sendMessage(StringUtils.colorized("&cRežim mise (opakovatelnost): &7" + quest.isRepeatable()));
+                sender.sendMessage(StringUtils.colorized("&cPožadavky: &7" + String.join(", ", quest.getRequirements())));
+                sender.sendMessage(StringUtils.colorized("&cČasový režim: &7" + quest.isCooldownEnabled()));
+                sender.sendMessage(StringUtils.colorized("&cČas pro znovu opakování: &7" + quest.getCooldown()));
+                sender.sendMessage(StringUtils.colorized("&cAutomatická aktivace: &7" + quest.isAutoStartEnabled()));
             }
         }
     }
